@@ -3079,8 +3079,8 @@ commPage.addEventListener('click', e=>{
     // Step 1: encounter a real lyric while listening; long press to share this line.
     describe(path,0,'听歌时，长按想分享的那一句');
     await wait(700,t);
-    await click(mainPlay,'听完整歌曲',t);
-    await waitForDemoAudio(()=>fullAudio,()=>t!==token,()=>paused);
+    await click(mainPlay,'听歌并选择想分享的歌词',t);
+    await wait(1400,t);
     const lyric = lyricList.querySelector('.lyric-line[data-i="0"]');
     await moveTo(lyric,'长按这一句歌词',t); cursor.classList.add('holding');
     await wait(900,t); openSheet(lyric); cursor.classList.remove('holding');
@@ -3130,7 +3130,7 @@ commPage.addEventListener('click', e=>{
     const source = card.querySelector(path==='text'?'.qm-open.xf-name':'.xs-full.xf-name');
     await reveal(chatBody,source,t);
     await click(source,'回到 QQ音乐听完整歌曲',t,()=>setStep(3));
-    await waitForDemoAudio(()=>fullAudio,()=>t!==token,()=>paused);
+    await wait(1600,t); if(fullAudio) fullAudio.pause();
   }
   function pauseOrResume() {
     paused=!paused; Engine.simPaused = paused; stage.classList.toggle('demo-paused',paused);

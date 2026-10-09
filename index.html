@@ -1,0 +1,3142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QQ音乐 · 音乐语言 — 让音乐从内容，变成语言</title>
+<style>
+/* ============ Design Tokens ============ */
+:root{
+  --green:#31c27c;
+  --green-deep:#0fae66;
+  --green-dark:#0a8a51;
+  --green-soft:#e9faf2;
+  --green-softer:#f4fdf9;
+  --ink:#15181c;
+  --ink-2:#3a4149;
+  --sub:#7a828c;
+  --line:#edf0f2;
+  --bg:#ffffff;
+  --bg-2:#f6f8f8;
+  --wechat:#95ec69;
+  --radius:18px;
+  --shadow-sm:0 2px 10px rgba(20,40,30,.06);
+  --shadow:0 12px 40px rgba(20,60,40,.10);
+  --shadow-lg:0 30px 80px rgba(15,80,50,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+
+/* ============ Buttons ============ */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:999px;font-size:15px;font-weight:600;transition:.25s;white-space:nowrap}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 8px 22px rgba(49,194,124,.35)}
+.btn-green:hover{background:var(--green-deep);transform:translateY(-2px);box-shadow:0 12px 28px rgba(49,194,124,.42)}
+.btn-ghost{border:1.5px solid var(--line);color:var(--ink);background:#fff}
+.btn-ghost:hover{border-color:var(--green);color:var(--green-deep)}
+.btn-lg{padding:16px 38px;font-size:16px}
+
+/* ============ Nav ============ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.05)}
+.nav-inner{max-width:1120px;margin:0 auto;padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
+.logo small{font-weight:500;color:var(--sub);font-size:12px;padding-left:9px;margin-left:5px;border-left:1px solid var(--line)}
+.nav-links{display:flex;gap:34px;font-size:14.5px;color:var(--ink-2)}
+.nav-links a{transition:.2s}
+.nav-links a:hover{color:var(--green-deep)}
+.nav .btn{padding:9px 20px;font-size:13.5px}
+
+/* ============ Hero ============ */
+.hero{padding:150px 0 90px;position:relative;overflow:hidden;background:
+   radial-gradient(900px 500px at 85% -5%,rgba(49,194,124,.14),transparent 60%),
+   radial-gradient(700px 400px at -10% 20%,rgba(49,194,124,.08),transparent 60%),#fff}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:var(--green-soft);color:var(--green-dark);font-size:13px;font-weight:600;margin-bottom:26px}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.hero h1{font-size:52px;line-height:1.22;font-weight:800;letter-spacing:-.5px}
+.hero h1 em{font-style:normal;color:var(--green-deep);position:relative}
+.hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:10px;background:rgba(49,194,124,.22);z-index:-1;border-radius:4px}
+.hero p.lead{margin:24px 0 14px;font-size:17px;color:var(--ink-2);max-width:480px}
+.formula{margin:18px 0 34px;display:inline-flex;align-items:center;gap:14px;font-size:15px;color:var(--sub);font-weight:600;letter-spacing:.3px}
+.formula b{color:var(--ink)}
+.formula .arrow{color:var(--green);font-size:20px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+
+/* hero visual — chat demo */
+.hero-visual{position:relative;height:440px;display:flex;align-items:center;justify-content:center}
+.hc-window{width:min(400px,100%);background:#f4f6f7;border-radius:24px;box-shadow:var(--shadow-lg);padding:22px 18px;display:flex;flex-direction:column;gap:18px;animation:floaty 6s ease-in-out infinite;position:relative;z-index:2}
+.hc-row{display:flex;gap:10px;align-items:flex-start}
+.hc-row.me{justify-content:flex-end}
+.hc-avatar{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
+.hc-avatar.f{background:linear-gradient(135deg,#7b8fa3,#5b6b7c)}
+.hc-avatar.m{background:linear-gradient(135deg,var(--green),var(--green-dark))}
+.hc-bubble{background:#fff;padding:11px 15px;border-radius:12px;font-size:15px;box-shadow:var(--shadow-sm);margin-top:3px}
+.hc-mcard{width:250px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.09);margin-top:3px}
+.hc-mtop{display:flex;gap:11px;padding:14px;align-items:center}
+.hc-ico{width:40px;height:40px;border-radius:10px;background:var(--green-soft);color:var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hc-ly{font-size:15px;font-weight:800;line-height:1.4}
+.hc-meta{font-size:11.5px;color:var(--sub);margin-top:3px}
+.hc-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--sub)}
+.hc-foot span{color:var(--green-dark);font-weight:700}
+.hc-foot b{color:var(--green-dark);font-weight:600}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes eq{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+.hc-ring{position:absolute;border-radius:50%;border:1.5px dashed rgba(49,194,124,.35);animation:spin 30s linear infinite;z-index:1}
+.hc-ring.r1{width:300px;height:300px;top:30px;right:-20px}
+.hc-ring.r2{width:170px;height:170px;bottom:0;left:20px;animation-duration:22s;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ Section common ============ */
+section.block{padding:96px 0}
+.sec-head{text-align:center;max-width:680px;margin:0 auto 60px}
+.sec-tag{font-size:13px;font-weight:700;color:var(--green-deep);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.sec-head h2{font-size:36px;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.sec-head p{margin-top:16px;color:var(--sub);font-size:16px}
+
+/* ============ Background: a text-led argument ============ */
+section.block.pain{background:#fafbf9;padding:84px 0 88px;scroll-margin-top:62px}
+.background-wrap{max-width:960px}
+.background-intro{max-width:760px;margin-bottom:48px}
+.background-kicker{font-size:13px;color:var(--green-dark);font-weight:600;margin-bottom:16px}
+.background-intro h2{font-size:38px;line-height:1.35;letter-spacing:-.7px;font-weight:750;margin-bottom:18px}
+.background-intro p{font-size:16px;line-height:1.9;color:var(--ink-2);max-width:680px}
+.background-chapter{display:grid;grid-template-columns:64px minmax(0,1fr);gap:20px;border-top:1px solid #dfe6e0;padding:36px 0 40px}
+.chapter-number{font-size:14px;letter-spacing:1px;color:var(--green-dark);font-weight:650;padding-top:7px}
+.chapter-label{font-size:13px;color:var(--green-dark);font-weight:600;margin-bottom:8px}
+.chapter-body h3{font-size:25px;line-height:1.5;font-weight:700;letter-spacing:-.3px;margin-bottom:18px}
+.chapter-body p{font-size:15.5px;line-height:1.95;color:var(--ink-2);margin-bottom:14px}
+.chapter-body strong{font-weight:650;color:var(--ink)}
+.lyric-examples{margin:22px 0;border-top:1px solid var(--line)}
+.lyric-example{display:grid;grid-template-columns:.95fr 1.25fr;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.lyric-example dt{font-size:14px;color:#68716c}
+.lyric-example dd{font-size:16px;font-weight:600;color:var(--ink)}
+.chapter-takeaway{border-left:3px solid var(--green);padding:3px 0 3px 17px;margin-top:22px}
+.chapter-body .chapter-takeaway{color:var(--ink);margin-bottom:0;font-size:16px;line-height:1.8}
+.melody-question{margin:22px 0;padding:19px 22px;background:#eef3ee}
+.melody-question .question-label{display:block;font-size:12px;color:#68716c;margin-bottom:6px}
+.melody-question p{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.75}
+.melody-answers{display:flex;gap:28px;flex-wrap:wrap;font-size:14px;color:#56635b}
+.chapter-body .research-note{font-size:12.5px;color:#68716c;line-height:1.8;margin-top:-4px}
+.sharing-gap{margin-top:32px}
+.sharing-gap h4{font-size:19px;font-weight:650;margin-bottom:12px}
+.sharing-comparison{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px;margin:20px 0}
+.sharing-comparison th{text-align:left;font-size:12px;font-weight:600;color:#68716c;background:#eef3ee;padding:11px 14px}
+.sharing-comparison td{vertical-align:top;padding:15px 14px;border-bottom:1px solid #dfe6e0;line-height:1.8;color:var(--ink-2);overflow-wrap:anywhere}
+.sharing-comparison th:first-child{width:20%}
+.sharing-comparison th:nth-child(2){width:29%}
+.sharing-comparison td:first-child{font-weight:600;color:var(--ink)}
+.reply-definition{margin-top:24px;padding:24px 26px;background:#edf5ef}
+.reply-definition .definition-label{font-size:12px;color:var(--green-dark);font-weight:600;margin-bottom:8px}
+.reply-definition h4{font-size:22px;line-height:1.5;margin-bottom:10px;font-weight:700}
+.reply-definition p{margin-bottom:0;font-size:14.5px}
+.meme-demo{display:flex;gap:16px;margin:18px 0 6px}
+.meme-demo figure{margin:0;flex:1;max-width:220px}
+.meme-demo img{width:100%;display:block;border-radius:14px;border:1px solid #e3e8e2;box-shadow:0 6px 18px rgba(30,60,40,.08)}
+.meme-demo figcaption{font-size:12.5px;color:#68716c;margin-top:7px;text-align:center}
+.background-close{border-top:1px solid #dfe6e0;padding-top:30px;margin-left:84px}
+.background-close p{font-size:14px;color:#68716c;line-height:1.85;margin-bottom:10px}
+.background-close h3{font-size:24px;line-height:1.6;font-weight:650;letter-spacing:-.3px}
+.background-close h3 span{color:var(--green-dark)}
+@media(max-width:680px){
+  section.block.pain{padding:54px 0 58px}
+  .background-wrap{padding:0 22px}
+  .background-intro{margin-bottom:32px}
+  .background-intro h2{font-size:29px}
+  .background-chapter{grid-template-columns:1fr;gap:8px;padding:26px 0 30px}
+  .chapter-number{padding-top:0;font-size:12px}
+  .chapter-body h3{font-size:22px;margin-bottom:14px}
+  .chapter-body p{font-size:15px}
+  .lyric-example{grid-template-columns:1fr;gap:5px;padding:14px 0}
+  .lyric-example dd{font-size:15.5px}
+  .melody-question{padding:16px}
+  .melody-answers{gap:8px 20px}
+  .sharing-comparison th,.sharing-comparison td{padding:11px 8px;font-size:12.5px}
+  .sharing-comparison th:first-child{width:22%}
+  .sharing-comparison th:nth-child(2){width:27%}
+  .reply-definition{padding:20px}
+  .reply-definition h4{font-size:20px}
+  .background-close{margin-left:0;padding-top:25px}
+  .background-close h3{font-size:22px}
+}
+
+/* ============ Features ============ */
+.features{background:var(--bg-2);padding:68px 0 72px}
+.f-head{text-align:center;margin-bottom:42px}
+.f-head .sec-tag{margin-bottom:12px}
+.f-head h2{font-size:36px;font-weight:800;letter-spacing:-.4px}
+.f-head p{margin-top:12px;font-size:15.5px;color:var(--sub)}
+
+/* 双卡布局 */
+.f-cards{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;margin-bottom:44px}
+.f-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+
+.f-card-top{display:flex;align-items:center;gap:10px;margin-bottom:15px;flex-wrap:wrap}
+.f-tag{font-size:12px;font-weight:700;color:var(--green-dark);background:var(--green-soft);padding:5px 13px;border-radius:999px}
+.f-tag.ai{background:#eef0f2;color:var(--sub)}
+.f-tag.gray{background:#f1f3f2;color:#98a09b}
+.f-scene{font-size:12.5px;color:var(--sub);background:var(--bg-2);border-radius:999px;padding:5px 13px}
+
+.f-name{font-size:26px;font-weight:800;line-height:1.2}
+.f-name-sub{font-size:14px;color:var(--green-dark);font-weight:600;margin:4px 0 12px}
+.f-text{font-size:14px;color:var(--ink-2);line-height:1.8;margin-bottom:16px}
+.f-text b{color:var(--green-dark)}
+.f-mini-badge{display:inline-block;margin-left:6px;font-size:11px;font-weight:600;color:var(--green-dark);background:var(--green-soft);border-radius:6px;padding:2px 8px;vertical-align:1px}
+
+/* 四步流程（横向时间线） */
+/* 音乐回复卡：全宽 + 分叉流程 */
+.f-card.full{grid-column:1/-1}
+.f-row2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
+.f-row2 .f-card{display:flex;flex-direction:column}
+.f-flow{margin-top:6px}
+.ff-main{display:flex;align-items:stretch;gap:10px;margin-bottom:16px}
+.ff-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;background:#f7faf8;border:1.5px solid var(--line);border-radius:16px;padding:16px 12px}
+.ff-step .n{width:30px;height:30px;border-radius:50%;background:#fff;border:2px solid var(--line);color:var(--sub);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.ff-step .t{font-size:13.5px;color:var(--ink);font-weight:700;line-height:1.4}
+.ff-step.q{border-color:var(--green);background:var(--green-soft)}
+.ff-step.q .n{border-color:var(--green);color:var(--green-dark)}
+.ff-step.q .t{color:var(--green-dark)}
+.ff-arrow{align-self:center;color:var(--green);font-weight:800;font-size:16px;flex-shrink:0}
+.ff-fork{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+.ff-branch{border:1.5px dashed #cfd8d1;border-radius:18px;padding:18px 16px 14px;position:relative}
+.ff-cond{position:absolute;top:-12px;left:16px;font-size:12px;font-weight:800;padding:3px 14px;border-radius:999px}
+.ff-cond.yes{background:var(--green);color:#fff}
+.ff-cond.no{background:#fff;border:1.5px solid #cfd8d1;color:var(--sub)}
+.ff-chain{display:flex;flex-direction:column;gap:7px}
+.ff-node{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 15px;font-size:13.5px;line-height:1.65;color:var(--ink-2)}
+.ff-node.ff-final{background:var(--green-dark);border-color:var(--green-dark);color:#fff;font-weight:700;text-align:center}
+.ff-chain .ff-arrow{text-align:center}
+
+/* 聊天消息（核心视觉） */
+.f-chat{background:#f4f6f7;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.f-chat.compact{margin-top:11px;padding:12px;gap:9px}
+.fmsg-row{display:flex}
+.fmsg-row.me{justify-content:flex-end}
+.fmsg{max-width:88%;border-radius:14px;padding:10px 14px;font-size:13.5px}
+/* 左卡的真实聊天气泡：略大、更像消息 */
+.f-chat .fmsg.gray,.f-chat .fmsg.music{padding:12px 16px;font-size:14px}
+.fmsg.gray{background:#fff;color:var(--ink-2);box-shadow:var(--shadow-sm);border-top-left-radius:5px}
+.fmsg.light{background:var(--green-soft);color:var(--ink-2);border-top-right-radius:5px}
+.fmsg.music{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;border-top-right-radius:5px;box-shadow:0 8px 22px rgba(49,194,124,.28)}
+.fmsg.result{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm);border-top-left-radius:5px;width:100%}
+.fm-ly{font-size:14px;font-weight:800;line-height:1.4}
+.fmsg.music .fm-meta{font-size:11.5px;opacity:.9;margin-top:4px}
+.fmsg.music .fm-meta b{color:#fff}
+.fmsg.result .fm-meta{font-size:11.5px;color:var(--sub);margin-top:3px}
+.fm-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.fm-line b{font-size:13.5px;color:var(--green-dark)}
+.fm-line span{font-size:11.5px;color:var(--sub)}
+.fm-btns{display:flex;gap:8px;margin-top:10px}
+.f-chat.compact .fm-btns{margin-top:0}
+.fm-btns span{font-size:12px;font-weight:700;border-radius:9px;padding:6px 14px}
+.fm-btns .b-listen{background:var(--bg-2);color:var(--ink-2)}
+.fm-btns .b-use{background:var(--green);color:#fff}
+
+/* 第二个示例：结果卡压成单行 */
+.f-chat.compact .fmsg.result{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:9px 12px;max-width:100%}
+.f-chat.compact .fm-line{margin-bottom:0}
+.f-chat.compact .fm-line b{font-size:13px}
+.f-chat.compact .fm-btns span{padding:5px 12px}
+
+/* 可选能力（最弱层级，贴底） */
+
+/* 汇聚区 */
+/* 汇聚区样式已移除 */
+
+/* ============ Demo stage ============ */
+.stage{background:linear-gradient(180deg,#fff 0%,var(--green-softer) 100%)}
+.demo-layout{display:grid;grid-template-columns:290px auto;gap:56px;align-items:center;justify-content:center}
+.ai-layout{grid-template-columns:auto}
+.demo-side .step-tab{width:100%;text-align:left;padding:18px 20px;border-radius:16px;border:1.5px solid var(--line);background:#fff;margin-bottom:12px;transition:.22s;display:flex;gap:14px;align-items:center}
+.demo-side .step-tab:hover{border-color:var(--green);transform:translateX(4px)}
+.demo-side .step-tab.on{border-color:var(--green);background:var(--green-soft);box-shadow:0 8px 22px rgba(49,194,124,.18)}
+.step-tab .n{width:32px;height:32px;border-radius:10px;background:var(--bg-2);color:var(--sub);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.step-tab.on .n{background:var(--green);color:#fff}
+.step-tab b{font-size:14.5px;display:block}
+.step-tab small{font-size:12px;color:var(--sub)}
+.demo-hint{margin-top:18px;padding:16px 18px;background:#fff;border:1px dashed rgba(49,194,124,.5);border-radius:14px;font-size:13px;color:var(--ink-2)}
+.demo-hint b{color:var(--green-dark)}
+
+/* phone frame */
+.phone{width:340px;height:700px;background:#0d0f12;border-radius:52px;padding:11px;box-shadow:0 0 0 2px #2a2e33, 0 40px 90px rgba(15,50,35,.30), 0 10px 30px rgba(0,0,0,.25);position:relative;margin:0 auto}
+.phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;background:#fff;position:relative}
+.notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:30px;background:#0d0f12;border-radius:0 0 18px 18px;z-index:50}
+.statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 20px;font-size:15px;font-weight:600;position:relative;z-index:40;flex-shrink:0}
+.sb-ic{display:inline-flex;align-items:center;gap:6px}
+.app{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:#fff;animation:fadein .3s}
+.screen.on{display:flex}
+.aiscreen{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff}
+.xs-foot .xs-full{cursor:pointer}
+.xs-foot .xs-full:hover{opacity:.75}
+@keyframes fadein{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+
+/* ---- S1 QQ音乐播放页（歌词模式 · 浅色） ---- */
+.player{color:var(--ink);background:#fff}
+.p-bg{position:absolute;inset:0;z-index:0;
+  background:linear-gradient(180deg,#ffffff 0%,#f6faf8 55%,#e3f3ec 100%)}
+.player>*:not(.p-popmask):not(.p-popmenu):not(.p-bg){position:relative;z-index:1}
+.p-header{display:flex;align-items:center;padding:6px 10px 2px}
+.p-header .ic{width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#8a8f96}
+.p-header .p-more{flex:1;display:flex;justify-content:center;gap:3px}
+.p-header .p-more i{width:3.5px;height:3.5px;border-radius:50%;background:#8a8f96}
+.p-header .p-acts{display:flex;align-items:center;gap:2px}
+.p-header .p-acts .ic{width:32px;height:32px}
+.p-header .p-acts .ic.green{color:var(--green)}
+.p-title{padding:4px 18px 6px}
+.p-title h2{font-size:22px;font-weight:700;color:var(--ink);line-height:1.25;margin:0}
+.p-artist{font-size:12.5px;color:#8a8f96;margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.p-artist .team{color:#8a8f96}
+.p-credits{padding:6px 18px 4px;font-size:12px;color:#8a8f96;line-height:1.9}
+.p-credits .row{display:flex;align-items:center;gap:5px}
+.p-credits .av{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#b8d4c6,#7fb69b);flex-shrink:0}
+.lyrics{flex:1;overflow:hidden;position:relative;padding:8px 0;
+  mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+.lyric-list{position:absolute;left:0;right:0;top:50%;transition:transform .45s cubic-bezier(.3,.8,.3,1);width:100%}
+.lyric-line{font-size:15px;font-weight:500;color:#b5b9be;padding:9px 22px;line-height:1.5;user-select:none;cursor:pointer}
+.lyric-line.singer{color:#989da4;font-weight:600;font-size:13px;padding-bottom:2px;padding-top:14px}
+.lyric-line.act{color:var(--green);font-weight:700;font-size:19px;padding-top:12px;padding-bottom:12px}
+.lyric-line.pressing{color:var(--green)}
+.p-bottom{padding:10px 18px 22px;display:flex;align-items:center;justify-content:space-between}
+.p-tools{display:flex;align-items:center;gap:4px}
+.p-tools .tbtn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#8a8f96;position:relative;font-size:11px;font-weight:600}
+.p-tools .tbtn .badge{position:absolute;top:1px;right:-2px;background:#ff5c5c;color:#fff;font-size:8px;font-weight:700;padding:0 3px;border-radius:6px;line-height:12px}
+.p-bottom .main-play{width:50px;height:50px;border-radius:50%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.22)}
+.p-bottom .main-play svg{width:19px;height:19px}
+
+/* long-press lyric popover（QQ音乐风格深色浮层） */
+.p-popmask{position:absolute;inset:0;z-index:60;display:none}
+.p-popmask.on{display:block}
+.p-popmenu{position:absolute;z-index:61;width:172px;background:rgba(36,40,38,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.12);border-radius:15px;box-shadow:0 14px 44px rgba(0,0,0,.5);padding:5px;display:none}
+.p-popmenu.on{display:block}
+.pm-item{display:flex;align-items:center;gap:9px;width:100%;padding:11px 13px;font-size:14px;color:rgba(255,255,255,.78);border-radius:10px}
+.pm-item.hl{color:var(--green);font-weight:700}
+.pm-item:active{background:rgba(255,255,255,.08)}
+.pm-sep{height:.5px;background:rgba(255,255,255,.1);margin:2px 10px}
+
+/* ---- S2 片段确认（QQ音乐歌词卡片风格） ---- */
+.confirm{background:#fff}
+.sub-header{display:flex;align-items:center;padding:4px 10px;border-bottom:1px solid var(--line)}
+.sub-header .back{width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+.sub-header b{flex:1;text-align:center;font-size:16px;font-weight:600}
+.sub-header .ph{width:34px}
+.confirm-body{flex:1;overflow-y:auto;padding:18px 18px 8px}
+
+/* 预览卡：仿歌词海报 */
+.cf-preview{position:relative;width:100%;height:auto;aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;
+  background:
+   radial-gradient(60px 60px at 70% 32%,rgba(255,244,214,.95),rgba(255,220,150,0) 70%),
+   linear-gradient(168deg,#f7d27a 0%,#f2a06a 42%,#c98d7d 64%,#70a99b 100%)}
+.cf-preview::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 40%,rgba(20,30,25,.34))}
+.cf-preview .ly{position:absolute;left:20px;right:20px;bottom:46px;text-align:center;color:#fff;font-size:21px;font-weight:800;line-height:1.5;text-shadow:0 2px 10px rgba(60,30,10,.4);z-index:2}
+.cf-preview .prow{position:absolute;left:14px;right:14px;bottom:11px;display:flex;align-items:center;justify-content:space-between;z-index:2}
+.cf-preview .qq,.cf-qq{display:inline-flex;align-items:center;gap:5px;color:#fff;font-size:11px;font-weight:600}
+.qq-mark{width:16px;height:16px;border-radius:5px;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qq-mark svg{width:11px;height:11px}
+.cf-dpill{background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.5);color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;padding:2.5px 10px}
+
+.cf-label{font-size:12px;font-weight:600;color:var(--sub);margin:18px 0 10px;display:flex;justify-content:space-between;align-items:baseline}
+.cf-label b{color:var(--ink);font-size:13px}
+.dur-pills{display:flex;gap:9px;margin-bottom:14px}
+.dur-pill{flex:1;padding:9px 0;border-radius:10px;border:1.5px solid var(--line);font-size:13px;font-weight:600;color:var(--sub);background:#fff;transition:.2s}
+.dur-pill.on{border-color:var(--green);background:var(--green-soft);color:var(--green-dark)}
+.wave{display:flex;align-items:center;gap:3px;height:48px;padding:0 4px;position:relative}
+.wave .bar{flex:1;background:#dde2de;border-radius:3px;position:relative;overflow:hidden;height:100%}
+.wave .bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--green);border-radius:3px}
+.wave.playing .bar{animation:wavebar .8s ease-in-out infinite}
+@keyframes wavebar{0%,100%{opacity:1}50%{opacity:.65}}
+.wave-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:var(--green-dark);z-index:2}
+
+/* 表情包开关 */
+.sticker-toggle{margin-top:16px;display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-radius:14px;background:var(--bg-2);border:1px solid var(--line)}
+.sticker-toggle.sub-toggle{margin-top:10px}
+.sticker-toggle.sub-toggle[hidden]{display:none}
+.sticker-toggle .tx{font-size:13.5px;font-weight:600}
+.sticker-toggle small{display:block;font-size:11px;color:var(--sub);font-weight:400;margin-top:1px}
+.switch{width:42px;height:25px;border-radius:999px;background:#cfd6d2;position:relative;transition:.2s;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:2.5px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.switch.on{background:var(--green)}
+.switch.on::after{left:19px}
+.sticker-panel{margin-top:13px;display:none}
+.sticker-panel.on{display:block}
+.sticker-bgs{display:flex;gap:10px}
+.sticker-bg{flex:1;height:74px;border-radius:11px;border:2px solid transparent;position:relative;overflow:hidden;background-size:cover;background-position:center;cursor:pointer}
+.sticker-bg.on{border-color:var(--green-dark)}
+.sticker-bg.sbg1{background-image:url(assets/img/stk-dog.png)}
+.sticker-bg.sbg2{background-image:url(assets/img/stk-cow.png)}
+.sticker-bg.sbg3{background:#f0f2f1;border:2px dashed #c4ccc8;display:flex;align-items:center;justify-content:center;color:#8a928c}
+.sticker-bg.sbg3 .up-ic{display:flex}
+.cf-play-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;backdrop-filter:blur(4px)}
+.cf-play-btn.playing{background:var(--green);border-color:var(--green)}
+/* 选中贴纸时，预览卡也显示该背景图 */
+.cf-preview.stk-active{background-size:cover;background-position:center}
+.cf-preview.stk-active::after{background:linear-gradient(180deg,rgba(0,0,0,.1) 30%,rgba(20,30,25,.42))}
+.confirm-foot{padding:12px 18px 22px}
+.confirm-foot .btn{width:100%;justify-content:center;padding:14px;border-radius:999px;font-size:15px}
+
+/* ---- S3 微信聊天（真实微信样式） ---- */
+.chat{background:#ededed}
+.chat-header{background:#ededed;display:flex;align-items:center;height:45px;padding:0 6px 0 4px;border-bottom:1px solid #dcdcdc}
+.chat-header .back{display:flex;align-items:center;width:44px;height:44px;padding:0 6px;color:#18181b}
+.chat-header b{flex:1;text-align:center;font-size:17px;font-weight:600;color:#111}
+.chat-header .more{display:flex;align-items:center;justify-content:center;width:40px;height:44px;color:#18181b}
+.chat-body{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:16px;background:#ededed}
+.msg{display:flex;gap:9px;align-items:flex-start;animation:fadein .3s}
+.msg.me{flex-direction:row-reverse;align-self:flex-end}
+.avatar{width:40px;height:40px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
+.avatar.f{background:linear-gradient(150deg,#8ba0b5,#5a6a7b)}
+.avatar.m{background:linear-gradient(150deg,#4ed391,#18a568)}
+.bubble{max-width:224px;padding:9px 12px;border-radius:6px;background:#fff;font-size:16px;line-height:1.4;position:relative;word-break:break-word}
+.msg.me .bubble{background:var(--wechat)}
+.bubble.arrow-l{border-top-left-radius:2px}
+.bubble.arrow-r{border-top-right-radius:2px}
+.bubble.arrow-l::before{content:"";position:absolute;left:-6px;top:11px;border:5px solid transparent;border-right-color:#fff;border-left:0}
+.bubble.arrow-r::before{content:"";position:absolute;right:-6px;top:11px;border:5px solid transparent;border-left-color:var(--wechat);border-right:0}
+/* 不做音乐表情时：绿色歌词气泡 + QQ音乐来源行（与音乐表情卡同款标识/播放键） */
+.ly-share{display:flex;flex-direction:column;align-items:flex-end;gap:5px;max-width:234px}
+.ly-bubble{position:relative;background:var(--wechat);color:#fff;font-size:14.5px;line-height:1.45;padding:9px 12px;border-radius:6px;word-break:break-word}
+.ly-bubble::after{content:"";position:absolute;right:-5px;top:11px;border:5px solid transparent;border-left-color:var(--wechat);border-right:0}
+.ly-src{display:flex;align-items:center;gap:5px;padding:0 3px}
+.ly-src .qq-mark{width:15px;height:15px;border-radius:4px}
+.ly-src .qq-mark svg{width:10px;height:10px}
+.ly-src .qm-open{cursor:pointer}
+.ly-src .qm-open:hover{opacity:.72}
+.ly-src .xf-name{font-size:12px;color:#8a9096;font-weight:600}
+.ly-play{width:22px;height:22px;border-radius:50%;background:#c8ccce;display:flex;align-items:center;justify-content:center;margin-left:3px;cursor:pointer;flex-shrink:0;transition:background .15s}
+.ly-share.playing .ly-play{background:var(--green)}
+.ly-play svg{width:9px;height:10px}
+.time-sep{align-self:center;font-size:12.5px;color:#b3b3b3}
+/* 音乐表情（图片卡，对齐参考图） */
+.xsticker{width:180px}
+.xs-img{position:relative;width:100%;height:auto;aspect-ratio:1 / 1;border-radius:7px;overflow:hidden;cursor:pointer;background:linear-gradient(180deg,#bfe0e8 0%,#7fb2c4 42%,#4e8ba6 68%,#2f6b8c 100%)}
+.xs-img::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-6px;height:58%;background:radial-gradient(120% 100% at 50% 100%,rgba(255,255,255,.55),rgba(255,255,255,.08) 55%,transparent 70%)}
+.xs-img .w3{position:absolute;left:8%;right:2%;bottom:44px;height:12px;background:rgba(255,255,255,.35);filter:blur(3px);border-radius:6px}
+.xs-img .w2{position:absolute;left:0;right:0;bottom:26px;height:14px;background:rgba(255,255,255,.45);filter:blur(2px);border-radius:7px}
+.xs-img .xs-ly{position:absolute;left:8px;right:8px;bottom:10px;text-align:center;color:#fff;font-size:16px;font-weight:800;line-height:1.35;text-shadow:0 2px 6px rgba(10,40,60,.55)}
+.xs-img .xs-prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25);display:none}
+.xsticker.playing .xs-prog{display:block}
+.xs-img .xs-prog i{display:block;height:100%;width:0;background:#fff}
+.xs-foot{display:flex;align-items:center;gap:5px;padding:8px 3px 2px}
+.xs-foot .qq-mark{width:15px;height:15px;border-radius:4px}
+.xs-foot .qq-mark svg{width:10px;height:10px}
+.xs-foot .xf-name{font-size:12px;color:#8a9096;font-weight:600}
+.xs-foot .xs-play{margin-left:auto;width:22px;height:22px;border-radius:50%;background:#c8ccce;display:flex;align-items:center;justify-content:center}
+.xsticker.playing .xs-play{background:var(--green)}
+.xs-foot .xs-play svg{width:9px;height:9px}
+/* 微信底部输入栏 */
+.chat-input{background:#f7f7f7;border-top:1px solid #dbdbdb;padding:8px 8px 9px;display:flex;align-items:center;gap:3px}
+.chat-input .wi{width:36px;height:40px;display:flex;align-items:center;justify-content:center;color:#2c2c2e}
+.chat-input .wi.voice{width:40px;height:40px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.09)}
+.chat-input .field{flex:1;background:#fff;border-radius:5px;height:38px;border:1px solid #e2e2e2}
+.chat-input .wp{width:38px;height:40px;display:flex;align-items:center;justify-content:center}
+
+/* ---- S4 AI ---- */
+.ai{background:#f7f8fa}
+.ai-header{background:#fff;display:flex;align-items:center;height:45px;padding:0 8px;border-bottom:1px solid var(--line)}
+.ai-header .back{display:flex;align-items:center;justify-content:center;width:38px;height:44px;color:#2c2c2e}
+.ai-header .ttl{flex:1;text-align:center}
+.ai-header b{font-size:17px;font-weight:600}
+.ai-header .ph{width:38px}
+.ai-body{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:13px}
+.ai-msg{display:flex;align-items:flex-start;gap:8px;font-size:14px}
+.ai-msg.me{flex-direction:row-reverse}
+.ai-avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(150deg,#4ed391,#0f8f57);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-avatar svg{width:18px;height:18px}
+.ai-bubble{background:#fff;border-radius:13px;padding:10px 14px;max-width:232px;font-size:14px;color:var(--ink-2);line-height:1.55;box-shadow:var(--shadow-sm)}
+.ai-msg.me .ai-bubble{background:#e4f8ee;color:var(--ink)}
+.typing{display:inline-flex;gap:5px;padding:12px 15px}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--green);opacity:.5;animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.ai-result{display:flex;gap:9px;align-items:center;padding:9px 0;animation:fadein .4s}
+.ai-result + .ai-result{border-top:1px solid var(--line)}
+.ai-result .r-cover{width:32px;height:32px;border-radius:7px;background:linear-gradient(150deg,#4ed391,#0f8f57);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-result .r-cover svg{width:14px;height:14px}
+.ai-result .r-tx{min-width:0;flex:1}
+.ai-result .ly{font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.3}
+.ai-result .meta{font-size:10px;color:var(--sub);margin-top:2px;display:flex;gap:4px;align-items:center;white-space:nowrap}
+.ai-result .meta .song{color:var(--green-dark);font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ai-result .meta .artist{flex-shrink:0;max-width:52px;overflow:hidden;text-overflow:ellipsis}
+.ai-result .meta .m-dur{background:var(--green);color:#fff;font-weight:700;padding:0 5px;border-radius:999px;font-size:9px;line-height:13px}
+.ai-result .mini-prog{height:2px;background:var(--line);border-radius:2px;position:relative;overflow:hidden;display:none;margin:5px 0 0}
+.ai-result.playing .mini-prog{display:block}
+.ai-result .mini-prog i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--green)}
+.ai-result .r-btns{display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:stretch}
+.ai-try{display:flex;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;color:var(--green-dark);border:1px solid var(--green);padding:2px 9px;border-radius:999px;transition:.2s;white-space:nowrap}
+.ai-result.playing .ai-try{background:var(--green);color:#fff}
+.ai-send{background:var(--green);color:#fff;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;transition:.2s;text-align:center;white-space:nowrap}
+.ai-send:hover{background:var(--green-deep)}
+.ai-bubble.wide{max-width:254px;flex:1;min-width:0}
+.ai-refresh{margin-top:9px;width:100%;display:flex;align-items:center;justify-content:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--green-dark);border:1px dashed var(--green);border-radius:999px;padding:6px 0;transition:.2s;background:var(--green-softer)}
+.ai-refresh:hover{background:var(--green-soft)}
+.ai-chips{padding:0 14px 10px}
+.ai-chips-label{font-size:11.5px;color:var(--sub);margin-bottom:8px}
+.ai-chip-list{display:flex;flex-wrap:wrap;gap:7px}
+.ai-chip{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;color:var(--ink-2);transition:.2s}
+.ai-chip:hover{border-color:var(--green);color:var(--green-dark)}
+.ai-input-bar{background:#fff;border-top:1px solid var(--line);padding:9px 13px 11px;display:flex;gap:9px;align-items:center}
+.ai-input-bar .fake-in{flex:1;background:#f3f5f4;border-radius:999px;height:38px;display:flex;align-items:center;padding:0 17px;font-size:13px;color:#a3a9af}
+.ai-input-bar .go{width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ============ Value / loop ============ */
+.value{background:#fff}
+.loop-wrap{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin-bottom:60px}
+.loop-node{background:var(--green-softer);border:1.5px solid rgba(49,194,124,.3);color:var(--green-dark);font-weight:700;font-size:14px;padding:13px 20px;border-radius:14px}
+.loop-node.hl{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 8px 22px rgba(49,194,124,.35)}
+.loop-arrow{color:var(--green);font-weight:700}
+.value-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.v-card{border:1px solid var(--line);border-radius:20px;padding:28px 24px;background:linear-gradient(180deg,#fff,var(--green-softer));transition:.25s}
+.v-card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.v-card .ico{font-size:27px;margin-bottom:14px}
+.v-card h4{font-size:16.5px;margin-bottom:9px}
+.v-card p{font-size:13px;color:var(--sub)}
+
+footer{background:#0e1411;color:#9fb0a7;padding:36px 0;text-align:center;font-size:13px}
+footer .logo{justify-content:center;margin-bottom:10px;color:#fff}
+footer a{color:#7fcda6}
+
+/* ============ Responsive ============ */
+@media(max-width:960px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .f-cards{grid-template-columns:1fr}
+  .f-card{padding:26px}
+  .mg-arrows{gap:110px}
+  .demo-layout,.ai-layout{grid-template-columns:1fr}
+  .demo-side{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+  .demo-side .step-tab{min-width:150px;margin-bottom:0}
+  .demo-hint{display:none}
+  .value-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .hero h1{font-size:38px}
+}
+@media(max-width:480px){
+  .stage{padding:40px 0}
+  .demo-layout{gap:26px}
+  .phone{width:100vw;height:78vh;border-radius:0;padding:0;box-shadow:none}
+  .phone-screen{border-radius:0}
+  .notch{display:none}
+  .value-grid{grid-template-columns:1fr}
+}
+
+/* ===== 音乐表情包社区 ===== */
+.cscreen{position:absolute;inset:0;display:none;flex-direction:column;background:#f5f6f8}
+.cscreen.on{display:flex}
+.qm-statusbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;font-size:14.5px;font-weight:700;color:#000;background:#fff}
+.qm-search{display:flex;align-items:center;gap:8px;padding:6px 12px 8px;background:#fff}
+.qm-search .claw{width:26px;height:26px;border-radius:50%;background:#00c25e;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qm-search .capsule{flex:1;display:flex;align-items:center;gap:5px;background:#f2f3f6;border-radius:999px;padding:7px 12px;font-size:11.5px;color:#7a8087;min-width:0;white-space:nowrap;overflow:hidden}
+.qm-search .capsule b{color:#494f57;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-search .rbtn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qm-search .rbtn.dark{background:#15171a;color:#fff}
+.qm-search .rbtn.green{background:#00c25e;color:#fff;font-size:11px;font-weight:800}
+.qm-cats{display:flex;gap:14px;align-items:center;padding:4px 12px 10px;background:#fff;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.qm-cats::-webkit-scrollbar{display:none}
+.qm-cat{font-size:15.5px;font-weight:700;color:#20242a;flex-shrink:0;cursor:pointer;transition:.2s}
+.qm-cat.on{background:#00c75d;color:#fff;border-radius:999px;padding:5px 13px}
+.qm-cat:not(.on){padding:5px 0}
+.qm-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 12px 6px;scrollbar-width:none}
+.qm-body::-webkit-scrollbar{display:none}
+/* 首页 banner */
+.qm-banners{display:flex;gap:10px}
+.qm-ban{flex:1;border-radius:14px;padding:12px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+.qm-ban.foryou{background:linear-gradient(160deg,#8f8ff3,#6f6ee0 55%,#5b58c9)}
+.qm-ban.daily{background:linear-gradient(160deg,#ffa259,#f97b2f 60%,#ef6c1d)}
+.qm-ban .bt{font-size:19px;font-weight:800;line-height:1.15}
+.qm-ban .bimg{position:absolute;right:10px;top:12px;width:64px;height:64px;border-radius:10px;object-fit:cover;box-shadow:0 6px 16px rgba(0,0,0,.22)}
+.qm-ban .bfoot{position:absolute;left:12px;bottom:12px;font-size:10.5px;opacity:.92;line-height:1.5}
+.qm-ban .bplay{position:absolute;right:10px;bottom:10px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.95);color:#111;display:flex;align-items:center;justify-content:center}
+.qm-secline{display:flex;align-items:center;gap:8px;margin:16px 2px 10px}
+.qm-secline h4{font-size:17px;font-weight:800;color:#111}
+.qm-secline .mini{width:22px;height:22px;border-radius:50%;background:#15171a;color:#fff;display:flex;align-items:center;justify-content:center}
+.qm-secline .x{margin-left:auto;color:#c3c8cd;font-size:14px}
+.qm-song{display:flex;align-items:center;gap:10px;padding:7px 0}
+.qm-song img{width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.qm-song .t{font-size:14px;font-weight:700;color:#111;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-song .tg{display:inline-block;font-size:9px;color:#9aa1a8;border:1px solid #e3e6ea;border-radius:4px;padding:0 3px;margin-left:5px;vertical-align:1px}
+.qm-song .a{font-size:11.5px;color:#9aa1a8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-song .mid{flex:1;min-width:0}
+.qm-song .love{display:flex;align-items:center;gap:2px;color:#f5547c;font-size:10.5px;flex-shrink:0}
+.qm-live-grid{display:flex;gap:10px}
+.qm-live{flex:1;border-radius:12px;overflow:hidden;position:relative;height:150px}
+.qm-live img{width:100%;height:100%;object-fit:cover}
+.qm-live .lv-t{position:absolute;left:8px;top:8px;color:#fff;font-size:13px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.qm-playbar{display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;margin:8px 10px;padding:7px 10px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.qm-playbar img{width:34px;height:34px;border-radius:6px;object-fit:cover}
+.qm-playbar .tt{flex:1;font-size:12px;color:#333;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-playbar .ic{color:#20242a;display:flex;align-items:center}
+.qm-tabbar{display:flex;background:#fff;border-top:1px solid #f0f1f3;padding:7px 4px 12px}
+.qm-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#8b9198}
+.qm-tab.on{color:#111;font-weight:800}
+.qm-tab.on .tico{color:#111}
+/* 社区页 */
+.qm-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:12px 14px 6px;background:linear-gradient(180deg,#fff,#f7f8f9)}
+.qm-hero h3{font-size:21px;font-weight:900;color:#101316;letter-spacing:0;white-space:nowrap}
+.qm-hero .sub{font-size:10.5px;color:#6b727a;margin-top:4px;white-space:nowrap}
+.qm-hero .sub .note{color:#00c25e}
+.qm-hero .rside{display:flex;align-items:center;gap:6px;flex-shrink:0;padding-top:2px}
+.qm-pub{display:flex;align-items:center;gap:4px;background:#00c75d;color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:7px 12px;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 12px rgba(0,199,93,.35)}
+.qm-ftabs{display:flex;gap:8px;padding:10px 12px 4px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.qm-ftabs::-webkit-scrollbar{display:none}
+.qm-ftab{flex-shrink:0;font-size:12.5px;font-weight:600;color:#5b626b;background:#fff;border:1px solid #e8eaee;border-radius:999px;padding:6px 13px;cursor:pointer;transition:.2s}
+.qm-ftab.on{background:#00c75d;border-color:#00c75d;color:#fff;font-weight:800}
+.qm-hot{display:flex;align-items:center;gap:6px;background:#fff4ea;border-radius:14px;padding:10px 11px;margin:10px 12px 4px}
+.qm-hot .fire{font-size:14px;flex-shrink:0}
+.qm-hot>div{flex:1;min-width:0}
+.qm-hot .ht{font-size:12.5px;font-weight:800;color:#171a1e;white-space:nowrap}
+.qm-hot .hs{font-size:8.5px;color:#a08a77;margin-top:2px;white-space:nowrap}
+.qm-hot .thumbs{display:flex;gap:4px;flex-shrink:0}
+.qm-hot .th{width:32px;height:32px;border-radius:7px;overflow:hidden;position:relative;flex-shrink:0}
+.qm-hot .th img{width:100%;height:100%;object-fit:cover}
+.qm-hot .th span{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:8.5px;text-align:center;padding:6px 0 2px;font-weight:600}
+.qm-hot .more{color:#8b9198;font-size:9.5px;flex-shrink:0}
+.qm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 10px 8px}
+.qm-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(15,20,26,.05)}
+.qm-card .imgwrap{position:relative;height:132px}
+.qm-card .imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
+.qm-card .imgwrap .ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45);text-align:center;padding:0 10px;line-height:1.35}
+.qm-card .dur{position:absolute;left:7px;bottom:7px;background:rgba(0,0,0,.55);color:#fff;font-size:9.5px;border-radius:999px;padding:2px 7px;display:flex;align-items:center;gap:3px;cursor:pointer;transition:.2s}
+.qm-card .dur:hover{background:rgba(0,0,0,.75)}
+.qm-card .dur.playing{background:#00c75d}
+.qm-card .cb{padding:8px 9px 9px}
+.qm-card .tt{display:flex;align-items:flex-start;gap:6px}
+.qm-card .tt b{font-size:12.5px;color:#14171b;line-height:1.35;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-card .tt .dots{color:#b9bfc6;flex-shrink:0;letter-spacing:1px;font-weight:800}
+.qm-card .src{font-size:9.5px;color:#9aa1a8;margin-top:3px}
+.qm-card .tag{display:inline-block;font-size:9px;font-weight:700;border-radius:5px;padding:1.5px 6px;margin-top:5px}
+.qm-card .tag.celebr{background:#ffe9ec;color:#f5547c}
+.qm-card .tag.morning{background:#e6f3ff;color:#3d97f5}
+.qm-card .tag.miss{background:#eceaff;color:#7b6cf0}
+.qm-card .tag.encour{background:#e5f8ec;color:#19b06b}
+.qm-card .foot{display:flex;align-items:center;gap:3px;border-top:1px solid #f2f3f5;margin-top:7px;padding-top:7px}
+.qm-card .avatar{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:800;flex-shrink:0}
+.qm-card .who{min-width:0;flex:1}
+.qm-card .who .n{font-size:9.5px;color:#33373d;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-card .who .c{font-size:7.5px;color:#a6acb3;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qm-card .fbtns{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.qm-card .loveb{display:flex;align-items:center;gap:1px;color:#20242a;font-size:8px}
+.qm-card .loveb svg{color:#20242a;width:10px;height:10px}
+.qm-card .use{background:#00c75d;color:#fff;font-size:9px;font-weight:800;border-radius:999px;padding:3px 7px;white-space:nowrap;transition:.2s}
+.qm-card .use:hover{background:#00b053}
+.qm-actions a{color:var(--ink-2);font-weight:600}
+@media(max-width:960px){
+  .qm-grid{grid-template-columns:1fr 1fr}
+}
+
+/* Community: WeChat music-sticker collection demo */
+.community-screens{display:grid;grid-template-columns:290px 340px;justify-content:center;align-items:center;gap:56px}
+.community-step-side small{display:block;line-height:1.7;margin-top:3px}
+.community-step-side .demo-hint{font-size:12px;line-height:1.8}
+@media(max-width:960px){.community-screens{grid-template-columns:minmax(0,1fr);gap:28px}.community-step-side{max-width:680px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}.community-step-side .step-tab{margin-bottom:0}.community-step-side .demo-hint{grid-column:1/-1;margin-top:0}}
+@media(max-width:480px){.community-step-side{display:flex;overflow-x:auto;max-width:100%;padding:0 22px 6px;gap:10px}.community-step-side .step-tab{min-width:230px;max-width:230px;flex-shrink:0}.community-step-side .demo-hint{display:none}}
+.community-screen{min-width:0}
+.community-caption{text-align:center;font-size:14px;font-weight:600;margin-bottom:20px}
+.community-help{max-width:340px;text-align:center;color:var(--sub);font-size:12px;line-height:1.8;margin:22px auto 0}
+#wxChatDemo{display:flex;flex-direction:column;position:absolute;inset:0;background:#ededed;color:#18181b}
+#wxChatDemo .chat-body{min-height:0;gap:16px}
+#wxChatDemo .statusbar{background:#ededed;color:#111}
+#wxChatDemo .chat-header{flex-shrink:0}
+#wxChatDemo .chat-input{flex-shrink:0;padding-bottom:12px}
+#wxChatDemo button:focus-visible{outline:2px solid var(--green-dark);outline-offset:3px}
+#wxChatDemo .field{min-width:0;width:0;padding:0 8px;font:inherit;font-size:15px;color:#111}
+#wxChatDemo .wi svg,#wxChatDemo .wp svg{width:27px;height:27px}
+.wx-sticker-image{display:block;width:180px;height:auto;aspect-ratio:1 / 1;border-radius:7px;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:pan-y}
+.wx-sticker-image img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.wx-sticker-image.pressed{outline:2px solid #b5b9b7;outline-offset:2px}
+.wx-menu-dismiss{position:absolute;inset:44px 0 0;z-index:55;background:transparent}
+.wx-context-menu{position:absolute;left:10px;right:10px;z-index:56;background:#4b4b4b;border-radius:11px;color:#fff;padding:10px 7px;box-shadow:0 5px 16px #0002}
+.wx-context-menu::after{content:"";position:absolute;right:65px;bottom:-7px;width:14px;height:14px;transform:rotate(45deg);background:#4b4b4b}
+.wx-context-menu.below::after{top:-7px;bottom:auto}
+.wx-menu-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px}
+.wx-menu-row+.wx-menu-row{border-top:1px solid #626262;margin-top:9px;padding-top:9px}
+.wx-menu-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;font-size:12px;color:#fff;white-space:nowrap}
+.wx-menu-item svg{width:25px;height:25px}
+.wx-menu-item:disabled{cursor:default}
+.wx-menu-item:not(:disabled):hover{background:#626262;border-radius:6px}
+.wx-menu-item .add-icon{position:relative}
+.wx-menu-item .add-icon small{position:absolute;right:-5px;bottom:0;background:#fff;color:#4b4b4b;border-radius:50%;width:13px;height:13px;font-size:12px;font-weight:700;line-height:12px}
+.wx-toast{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);background:#222e;color:#fff;padding:14px 18px;border-radius:8px;font-size:14px;z-index:60;white-space:nowrap;pointer-events:none}
+.wx-emoji-panel{background:#f5f5f5;flex-shrink:0;height:255px;display:flex;flex-direction:column;border-top:1px solid #dedede;padding-bottom:14px}
+.wx-emoji-tabs{display:flex;align-items:center;gap:4px;padding:8px;border-bottom:1px solid #dedede;overflow-x:auto;flex-shrink:0}
+.wx-emoji-tabs button{height:40px;min-width:40px;padding:7px;display:flex;align-items:center;justify-content:center;color:#222;border-radius:6px;font-size:25px}
+.wx-emoji-tabs svg{width:27px;height:27px}
+.wx-emoji-tabs button[aria-selected="true"]{background:#fff}
+.wx-emoji-content{padding:13px 15px;overflow-y:auto;flex:1;min-height:0}
+.wx-emoji-content h4{font-weight:400;color:#868686;font-size:13px;margin-bottom:12px}
+.wx-emoji-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:13px 4px;font-size:23px}
+.wx-emoji-grid button{font-size:23px;line-height:1.3}
+.wx-saved-sticker{display:flex;flex-direction:column;align-items:center;width:92px;gap:7px;font-size:11px;line-height:1.4;color:#666}
+.wx-saved-sticker img{width:86px;height:70px;object-fit:cover;border-radius:5px}
+.wx-empty{color:#999;text-align:center;font-size:13px;line-height:1.8;padding:22px 0}
+#wxChatDemo[hidden],#wxChatDemo [hidden]{display:none!important}
+#community{scroll-margin-top:70px}
+#wxCollectionPhone{scroll-margin-top:90px}
+.qm-card .loveb[aria-pressed="true"],.qm-card .loveb[aria-pressed="true"] svg{color:#ed425d}
+.wx-saved-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 8px}
+@media(max-width:480px){
+  .community-screens{gap:40px;margin:0 -28px}
+  .community-screen{width:100%}
+  .community-help{padding:0 22px}
+}
+
+
+/* ============ Unified presentation layout ============ */
+:root{--ink:#19241f;--ink-2:#46534c;--sub:#6d7972;--line:#e2e8e4;--bg-2:#f6f8f6;--green-soft:#edf8f1;--shadow-sm:0 2px 8px #173a2305}
+html{scroll-padding-top:88px}
+body{line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap,.nav-inner{max-width:1080px;padding-left:32px;padding-right:32px}
+section.block,section.block.pain{padding:88px 0;scroll-margin-top:80px}
+section.block{border-top:1px solid var(--line)}
+.nav{background:rgba(255,255,255,.95);border-color:var(--line)}
+.nav-inner{height:70px;gap:20px}
+.logo{font-size:16px;white-space:nowrap;gap:10px}
+.logo-mark{background:var(--green-deep);flex-shrink:0;border-radius:8px}
+.logo small{font-size:11px;letter-spacing:.2px}
+.nav-links{gap:24px;font-size:13px;white-space:nowrap}
+.nav .btn{padding:9px 18px;font-size:12px}
+.btn{border-radius:10px;font-weight:600;transition:background .18s,border-color .18s;line-height:1.5}
+.btn-green,.btn-green:hover{box-shadow:none;transform:none}
+.btn-ghost{border:1px solid #d5dfd8}
+.btn-lg{padding:14px 23px;font-size:14px}
+.hero{padding:142px 0 80px;background:#fff}
+.hero-grid{grid-template-columns:1.1fr .9fr;gap:44px;min-height:320px}
+.hero-eyebrow{font-size:12px;font-weight:600;color:var(--green-dark);letter-spacing:1px;margin-bottom:20px}
+.hero h1{font-size:44px;font-weight:700;line-height:1.4;letter-spacing:-1.4px}
+.hero h1 em{color:var(--green-dark)}
+.hero h1 em::after{display:none}
+.hero p.lead{font-size:15.5px;line-height:1.95;margin:22px 0 28px;max-width:485px}
+.hero-cta{gap:12px}
+.hero-visual{height:320px}
+.hc-ring{display:none}
+.hc-window{animation:none;border:1px solid #dfe6e1;border-radius:20px;padding:24px 18px;box-shadow:0 16px 36px #163c2410;background:#f3f6f3;gap:24px}
+.hc-mcard{box-shadow:0 2px 8px #173a2308;border:1px solid #e5eae6;border-radius:12px}
+.hc-ly{font-weight:650}
+.sec-head,.f-head{max-width:760px;text-align:left;margin:0 0 40px}
+.sec-tag,.background-kicker{font-size:12px;letter-spacing:1px;font-weight:600;color:var(--green-dark);margin-bottom:12px;text-transform:none}
+.sec-head h2,.f-head h2,.background-intro h2{font-size:32px;line-height:1.5;letter-spacing:-.6px;font-weight:700}
+.sec-head p,.f-head p{font-size:15px;line-height:1.9;color:var(--sub);margin-top:14px;white-space:normal}
+.background-wrap{max-width:960px}
+section.block.pain{background:#f8faf8}
+.background-intro{margin-bottom:36px}
+.background-chapter{grid-template-columns:44px minmax(0,1fr);gap:24px;padding:32px 0}
+.chapter-number{font-size:12px;letter-spacing:1px}
+.chapter-label{font-size:14px;margin-bottom:12px;font-weight:650}
+.chapter-body h3{font-size:23px;font-weight:650}
+.chapter-body p{font-size:15px;line-height:1.95}
+.chapter-body em{font-style:normal}
+.melody-question,.reply-definition{border-radius:12px;padding:22px 24px;background:#eef4ef;border:1px solid #e2eae3}
+.melody-question p{font-size:15px}
+.melody-answers{display:grid;grid-template-columns:1fr;gap:8px;font-size:13px}
+.chapter-takeaway{margin-top:20px;border-left-width:2px}
+.lyric-example dt{font-size:13px}
+.lyric-example dd{font-size:15px;font-weight:600}
+.sharing-comparison th{padding:13px 16px}
+.sharing-comparison td{padding:16px;font-size:13px}
+.meme-demo{gap:20px;margin-top:24px}
+.meme-demo figure{max-width:200px}
+.meme-demo img{border-radius:10px;box-shadow:none}
+.meme-demo figcaption{font-size:11px;line-height:1.7;text-align:left}
+.background-close{margin-left:68px;padding-top:26px}
+.background-close h3{font-size:22px}
+.features{background:#fff}
+.f-cards{gap:20px;margin-bottom:0}
+.f-card{border-radius:16px;padding:28px;box-shadow:none;border-color:var(--line)}
+.f-card.full{background:#f8faf8}
+.f-row2{gap:20px}
+.f-name{font-size:23px;font-weight:650}
+.f-name-sub{font-size:13px;color:var(--green-dark);margin-top:8px}
+.f-text{font-size:14px;line-height:1.9;margin-bottom:0}
+.f-flow{margin-top:28px}
+.f-tag,.f-tag.gray,.f-tag.ai{background:#edf3ee;color:#426550;border-radius:5px;padding:3px 8px;font-size:11px}
+.f-scene{padding:0;background:none;font-size:11px}
+.ff-main{gap:10px;margin-bottom:22px}
+.ff-step{border-width:1px;border-radius:10px;background:#fff;padding:14px 8px}
+.ff-step .t{font-size:12px;font-weight:600}
+.ff-step .n{width:24px;height:24px;font-size:11px;border-width:1px}
+.ff-step.q{border-color:#abd6b9}
+.ff-fork{grid-template-columns:1fr 1fr;gap:20px}
+.ff-branch{border-style:solid;border-width:1px;border-radius:10px;padding:22px 14px 14px}
+.ff-node{font-size:12px;border-radius:7px;line-height:1.8}
+.ff-node.ff-final{background:#edf5ef;color:#286342;border-color:#d6e8dc}
+.ff-cond{font-weight:600;font-size:11px;border-radius:5px}
+.stage,#community{background:#f6f8f6}
+.ai-section{background:#fff}
+.demo-layout,.community-screens{display:grid;grid-template-columns:310px 340px;justify-content:center;align-items:center;gap:64px;padding:36px 40px;border:1px solid #e1e8e2;border-radius:22px;background:#fff;min-width:0}
+.ai-layout{grid-template-columns:310px 340px;background:#f8faf8}
+.demo-side,.community-step-side{min-width:0;display:block;max-width:none;margin:0}
+.demo-side .step-tab{width:100%;min-width:0;min-height:92px;padding:16px;border-width:1px;border-radius:12px;gap:12px;margin-bottom:12px;box-shadow:none;transition:background .18s,border-color .18s}
+.demo-side .step-tab:hover{transform:none;border-color:#9fc9af;background:#f6faf7}
+.demo-side .step-tab.on{box-shadow:none;border-color:#96cbaa;background:#edf7f0}
+.step-tab .n{width:28px;height:28px;flex-shrink:0;border-radius:7px;font-size:12px;font-weight:650}
+.step-tab.on .n{background:var(--green-deep)}
+.step-tab>span:last-child{min-width:0}
+.step-tab b{font-size:14px;line-height:1.6;font-weight:650}
+.step-tab small{display:block;font-size:12px;line-height:1.75;margin-top:4px;color:var(--sub)}
+.demo-hint,.community-step-side .demo-hint{display:block;background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:18px 2px 0;margin-top:20px;font-size:12px;line-height:1.8}
+.phone{width:340px;height:700px;box-shadow:0 0 0 1px #333936,0 14px 30px #14372016;border-radius:48px;padding:10px;background:#141816}
+.phone-screen{border-radius:38px}
+.notch{top:10px;display:block;background:#141816}
+.community-screen{min-width:0;width:auto}
+.ai-overview-label{font-size:12px;color:var(--green-dark);font-weight:600;margin-bottom:14px}
+.ai-overview h3{font-size:27px;line-height:1.55;font-weight:650;letter-spacing:-.4px;margin-bottom:16px}
+.ai-overview>p:not(.ai-overview-label){font-size:14px;line-height:1.9;color:var(--sub)}
+.ai-overview-steps{list-style:none;margin-top:28px}
+.ai-overview-steps li{display:flex;gap:16px;padding:17px 0;border-top:1px solid var(--line)}
+.ai-overview-steps li>span{font-size:12px;color:var(--green-dark);padding-top:3px;font-weight:600}
+.ai-overview-steps b{font-size:14px;font-weight:650}
+.ai-overview-steps p{font-size:12px;color:var(--sub);line-height:1.8;margin-top:4px}
+.value{background:#f8faf8}
+.loop-wrap{justify-content:flex-start;gap:8px;margin-bottom:32px}
+.loop-node{font-size:12px;font-weight:600;padding:9px 12px;border-width:1px;border-radius:7px;background:#fff;border-color:var(--line);color:var(--ink-2)}
+.loop-node.hl{background:#edf7f0;border-color:#b8d7c2;color:var(--green-dark);box-shadow:none}
+.loop-arrow{font-size:12px;color:#9baa9f}
+.value-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.v-card{border-radius:14px;background:#fff;padding:26px;transition:none}
+.v-card:hover{transform:none;box-shadow:none}
+.v-card .ico{font-size:12px;letter-spacing:1px;font-weight:600;color:var(--green-dark);margin-bottom:20px}
+.v-card h4{font-size:17px;font-weight:650;margin-bottom:12px}
+.v-card p{font-size:13px;line-height:1.85}
+footer{background:#fff;color:var(--sub);border-top:1px solid var(--line);padding:32px 0;text-align:left;font-size:11px;line-height:1.9}
+footer .logo{justify-content:flex-start;color:var(--ink);font-size:14px;margin-bottom:12px}
+footer .logo-mark{width:24px;height:24px;font-size:12px;border-radius:6px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--green-dark);outline-offset:4px}
+@media(max-width:960px){
+  .wrap,.nav-inner{padding-left:28px;padding-right:28px}
+  .logo small{display:none}
+  .hero-grid{grid-template-columns:1fr;gap:28px;min-height:0}
+  .hero{padding:124px 0 64px}
+  .hero h1{font-size:42px}
+  .hero p.lead{max-width:600px}
+  .hero-visual{display:none}
+  .demo-layout,.community-screens{grid-template-columns:minmax(0,1fr);gap:32px;padding:28px;margin:0}
+  .demo-side,.community-step-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0;overflow:visible;width:100%;max-width:none}
+  .demo-side .step-tab{margin-bottom:0;max-width:none;min-width:0;align-items:flex-start;min-height:108px}
+  .demo-hint,.community-step-side .demo-hint{grid-column:1/-1;margin-top:4px;padding-top:14px}
+  .ai-overview{max-width:480px;margin:0 auto;width:100%}
+  .ai-overview h3 br{display:none}
+  .ai-overview-steps{margin-top:20px}
+  .f-row2{grid-template-columns:1fr}
+  .phone{max-width:100%;margin:0 auto}
+}
+@media(max-width:600px){
+  .wrap,.nav-inner,.background-wrap{padding-left:22px;padding-right:22px}
+  .nav-inner{height:62px;gap:10px}
+  .logo{font-size:13px;gap:7px}
+  .logo-mark{width:26px;height:26px}
+  .nav .btn{font-size:11px;padding:8px 12px}
+  section.block,section.block.pain{padding:56px 0;scroll-margin-top:72px}
+  .hero{padding:104px 0 54px}
+  .hero h1{font-size:32px;letter-spacing:-.8px}
+  .hero-eyebrow{font-size:11px;margin-bottom:16px}
+  .hero p.lead{font-size:14px;margin:20px 0 24px}
+  .btn-lg{padding:12px 16px;font-size:12px}
+  .sec-head,.f-head,.background-intro{margin-bottom:28px}
+  .sec-head h2,.f-head h2,.background-intro h2{font-size:27px;line-height:1.5}
+  .sec-head p,.f-head p{font-size:14px;line-height:1.85;margin-top:12px}
+  .sec-tag,.background-kicker{font-size:11px;letter-spacing:.5px}
+  .background-chapter{grid-template-columns:1fr;gap:8px;padding:26px 0}
+  .chapter-body h3{font-size:21px}
+  .chapter-body p{font-size:14px}
+  .lyric-example{grid-template-columns:1fr;gap:5px}
+  .melody-question,.reply-definition{padding:18px}
+  .sharing-comparison th,.sharing-comparison td{padding:12px 8px;font-size:12px}
+  .background-close{margin-left:0}
+  .background-close h3{font-size:20px}
+  .meme-demo{gap:12px}
+  .meme-demo figcaption{font-size:10px}
+  .f-card{padding:22px;border-radius:12px}
+  .f-name{font-size:21px}
+  .ff-main{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ff-main>.ff-arrow{display:none}
+  .ff-step{gap:6px;padding:12px 8px}
+  .ff-fork{grid-template-columns:1fr;gap:20px}
+  .demo-layout,.community-screens{padding:20px 14px;gap:26px;border-radius:16px;grid-template-columns:minmax(0,1fr);margin:0}
+  .demo-side,.community-step-side{display:grid;gap:10px;padding:0;overflow:visible}
+  .demo-side .step-tab{padding:12px 10px;gap:8px;min-height:130px;max-width:none;min-width:0}
+  .step-tab .n{width:23px;height:23px;font-size:11px;border-radius:6px}
+  .step-tab b{font-size:12px}
+  .step-tab small{font-size:11px;line-height:1.7}
+  .demo-hint,.community-step-side .demo-hint{display:block;font-size:11px}
+  .phone{width:min(340px,100%);height:700px;padding:9px;border-radius:38px;box-shadow:0 0 0 1px #333936,0 8px 18px #14372012}
+  .phone-screen{border-radius:29px}
+  .notch{top:9px;width:110px;height:26px;border-radius:0 0 15px 15px;display:block}
+  .community-screen{width:100%}
+  .ai-overview{padding:4px 6px}
+  .ai-overview h3{font-size:23px}
+  .value-grid{grid-template-columns:1fr;gap:12px}
+  .v-card{padding:22px}
+  .v-card .ico{margin-bottom:12px}
+  .loop-wrap{gap:7px;margin-bottom:26px}
+  .loop-node{font-size:11px;padding:8px 10px}
+  footer{padding:26px 0;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+
+/* Larger titles and a connected, responsive process diagram */
+.hero h1{font-size:50px}
+.sec-head h2,.f-head h2,.background-intro h2{font-size:38px;line-height:1.45}
+.chapter-body h3{font-size:28px}
+.chapter-label{font-size:16px}
+.sharing-gap h4{font-size:23px}
+.reply-definition h4{font-size:26px}
+.background-close h3{font-size:27px}
+.f-name{font-size:28px}
+.v-card h4{font-size:21px}
+.step-tab b{font-size:16px}
+.sec-tag,.background-kicker{font-size:13px}
+.phone h2{font-size:26px}
+.phone h3{font-size:21px}
+.phone h4{font-size:14px}
+.f-row2{grid-template-columns:1fr}
+.f-card.full{background:#fff}
+.reply-flow{margin-top:30px;background:#f8faf9;border:1px solid #e3eae5;border-radius:16px;padding:28px}
+.reply-flow-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;list-style:none}
+.reply-flow-steps li{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;min-height:76px;border:1px solid #d9e4dc;border-radius:10px;background:#fff;padding:14px;font-size:15px;font-weight:600;text-align:center;line-height:1.6}
+.flow-index{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:26px;height:26px;border-radius:7px;font-size:12px;font-weight:650;color:#50745c;background:#edf4ef}
+.reply-flow-steps li:not(:last-child)::after{content:"";position:absolute;top:50%;left:100%;width:40px;border-top:1px solid #9db8a5}
+.reply-flow-steps li:not(:last-child)::before{content:"";position:absolute;left:calc(100% + 32px);top:calc(50% - 3px);width:6px;height:6px;border-top:1px solid #9db8a5;border-right:1px solid #9db8a5;transform:rotate(45deg);z-index:1}
+.flow-route{height:44px}
+.flow-route svg{display:block;width:100%;height:100%;fill:none;stroke:#9db8a5;stroke-width:1.2;vector-effect:non-scaling-stroke}
+.flow-decision{position:relative;width:280px;height:112px;max-width:100%;margin:0 auto}
+.flow-decision>svg{width:100%;height:100%;fill:#edf7f0;stroke:#94bfa2;stroke-width:1.3}
+.flow-decision>div{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;color:#23623b;font-size:16px;font-weight:650}
+.flow-decision .flow-index{background:#dbeee1}
+.flow-split-stem{height:24px;width:1px;background:#9db8a5;margin:auto}
+.reply-flow-branches{--branch-gap:40px;display:grid;grid-template-columns:1fr 1fr;gap:var(--branch-gap);position:relative}
+.reply-flow-branches::before{content:"";position:absolute;top:0;left:calc(25% - var(--branch-gap) / 4);width:calc(50% + var(--branch-gap) / 2);border-top:1px solid #9db8a5}
+.flow-branch{position:relative;padding-top:28px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.flow-branch::before{content:"";position:absolute;top:0;left:50%;height:28px;border-left:1px solid #9db8a5}
+.flow-branch-label{position:relative;z-index:1;display:inline-block;padding:3px 15px;border-radius:5px;background:#e8f3ec;color:#286843;font-size:13px;font-weight:600;margin-bottom:14px}
+.flow-branch-label.no{background:#edf0ee;color:#58685e}
+.flow-action,.flow-output{width:100%;padding:18px 20px;border:1px solid #dce5df;border-radius:10px;background:#fff;font-size:14px;line-height:1.85;text-align:left}
+.flow-output{background:#eaf5ed;border-color:#c4decc;color:#24653c;font-weight:650;text-align:center}
+.flow-output.plain{background:#fff;color:#46584c;border-color:#d4dfd7}
+.flow-down{height:30px;line-height:30px;color:#86aa93;font-size:17px}
+@media(max-width:960px){
+  .hero h1{font-size:46px}
+  .reply-flow{padding:22px}
+  .reply-flow-steps{gap:28px}
+  .reply-flow-steps li{flex-direction:column;gap:8px;font-size:14px;padding:14px 8px}
+  .reply-flow-steps li:not(:last-child)::after{width:28px}
+  .reply-flow-steps li:not(:last-child)::before{left:calc(100% + 20px)}
+  .reply-flow-branches{--branch-gap:22px}
+  .flow-action,.flow-output{padding:15px;font-size:13px}
+}
+@media(max-width:600px){
+  .hero h1{font-size:36px}
+  .sec-head h2,.f-head h2,.background-intro h2{font-size:31px;line-height:1.45}
+  .chapter-body h3{font-size:24px}
+  .sharing-gap h4{font-size:21px}
+  .reply-definition h4{font-size:24px}
+  .background-close h3{font-size:23px}
+  .f-name{font-size:25px}
+  .v-card h4{font-size:20px}
+  .step-tab b{font-size:14px}
+  .sec-tag,.background-kicker{font-size:12px}
+  .reply-flow{padding:20px 14px;margin-top:24px}
+  .reply-flow-steps{grid-template-columns:1fr;gap:24px}
+  .reply-flow-steps li{flex-direction:row;justify-content:flex-start;text-align:left;min-height:64px;font-size:14px;padding:13px 16px}
+  .reply-flow-steps li:not(:last-child)::after{left:50%;top:100%;height:24px;width:0;border-top:0;border-left:1px solid #9db8a5}
+  .reply-flow-steps li:not(:last-child)::before{left:calc(50% - 3px);top:calc(100% + 16px);transform:rotate(135deg)}
+  .flow-route{height:24px;position:relative}
+  .flow-route svg{display:none}
+  .flow-route::after{content:"";display:block;position:absolute;left:50%;height:24px;border-left:1px solid #9db8a5}
+  .flow-decision{width:250px;height:100px}
+  .flow-decision>div{font-size:14px;gap:8px}
+  .reply-flow-branches{--branch-gap:12px}
+  .flow-action,.flow-output{padding:12px 10px;font-size:12px;line-height:1.8}
+  .flow-branch-label{font-size:12px;padding:2px 12px}
+}
+
+
+/* Community autoplay: presentation controls and a visible simulated pointer */
+.community-demo-toolbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:-28px}
+.community-demo-status{display:flex;align-items:center;gap:9px;font-size:13px;line-height:1.7;color:var(--ink-2);min-width:0}
+.demo-status-dot{width:7px;height:7px;border-radius:50%;background:#afbbb3;flex-shrink:0}
+.demo-running .demo-status-dot{background:var(--green-deep);box-shadow:0 0 0 4px #0fae6610}
+.demo-paused .demo-status-dot{background:#d5a54a;box-shadow:0 0 0 4px #d5a54a10}
+.community-demo-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.community-demo-controls .btn{padding:9px 13px;font-size:12px}
+.community-demo-controls .btn:disabled{opacity:.45;cursor:default}
+.demo-stop{font-size:12px;color:var(--sub);padding:8px 4px}
+.demo-stop[hidden],.community-demo-pointer[hidden]{display:none}
+.community-demo-pointer{position:absolute;left:0;top:0;width:28px;height:34px;z-index:90;pointer-events:none;will-change:transform;filter:drop-shadow(0 2px 2px #0003)}
+.demo-pointer-arrow{display:block;width:28px;height:34px}
+.demo-pointer-label{position:absolute;top:35px;right:-8px;white-space:nowrap;padding:4px 8px;border-radius:5px;background:#20392ef2;color:#fff;font-size:11px;line-height:1.5;font-weight:500;filter:none}
+.demo-pointer-label:empty{display:none}
+.demo-click-ring{position:absolute;left:-13px;top:-13px;width:30px;height:30px;border:2px solid #18b76c;border-radius:50%;opacity:0}
+.clicking .demo-click-ring{animation:demoClick .5s ease-out}
+.demo-hold-ring{position:absolute;left:-22px;top:-22px;width:44px;height:44px;display:none;transform:rotate(-90deg)}
+.demo-hold-ring circle{fill:#31c27c15;stroke:#0fae66;stroke-width:3;stroke-dasharray:113;stroke-dashoffset:113}
+.holding .demo-hold-ring{display:block}
+.holding .demo-hold-ring circle{animation:demoHold .9s linear forwards}
+.demo-paused .community-demo-pointer *{animation-play-state:paused!important}
+.demo-target{outline:2px solid #31c27c;outline-offset:3px;border-radius:6px}
+@keyframes demoClick{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.6);opacity:0}}
+@keyframes demoHold{to{stroke-dashoffset:0}}
+@media(max-width:960px){
+  .community-demo-toolbar{margin-bottom:0;flex-wrap:wrap;gap:14px;padding-bottom:18px}
+  .community-demo-status{width:100%}
+}
+@media(max-width:600px){
+  .community-demo-toolbar{gap:12px}
+  .community-demo-controls{flex-wrap:wrap}
+  .community-demo-controls .btn{font-size:11px;padding:9px 12px}
+  .community-demo-status{font-size:12px}
+  .demo-stop{font-size:11px}
+}
+
+
+/* Reply autoplay stays separate from the community walkthrough. */
+.reply-demo-summary{min-width:0;flex:1}
+.reply-demo-summary>label{font-size:12px;font-weight:600;color:var(--ink-2);margin-right:8px}
+#replyDemoMode{font:inherit;font-size:12px;color:var(--green-dark);background:#f3f8f4;border:1px solid #dce7de;border-radius:7px;padding:8px 10px;max-width:100%;margin-bottom:10px;cursor:pointer}
+#replyDemoMode:disabled{cursor:default;opacity:.8}
+.reply-demo-toolbar{align-items:flex-start}
+.reply-demo-controls{padding-top:3px}
+#replyDemoPhone{scroll-margin-top:90px}
+@media(max-width:960px){.reply-demo-summary{width:100%;flex:auto}.reply-demo-controls{padding-top:0}}
+@media(max-width:600px){.reply-demo-summary>label{display:block;margin-bottom:7px}#replyDemoMode{width:100%;font-size:11px}.reply-demo-status{font-size:12px}}
+
+/* A single-line, text-led opening. */
+.hero-grid{grid-template-columns:minmax(0,1fr);min-height:0}
+.hero h1{white-space:nowrap;font-size:clamp(24px,5.2vw,56px);letter-spacing:-1px;line-height:1.4}
+.hero p.lead{max-width:700px}
+@media(max-width:600px){.hero h1{font-size:clamp(22px,6.6vw,36px);letter-spacing:-.6px}}
+
+/* Presentation refresh: readable typography, denser rhythm and QQ Music green. */
+:root{--ink:#14251b;--ink-2:#3b5143;--sub:#617769;--line:#dce8df;--green-soft:#e9f8ee}
+body{font-size:17px}
+.wrap,.nav-inner{max-width:1180px}
+section.block,section.block.pain{padding:66px 0}
+.nav-inner{height:72px}
+.logo{font-size:18px}
+.logo small{font-size:12px}
+.nav-links{font-size:15px;gap:26px}
+.nav .btn{font-size:14px;padding:11px 20px}
+.hero{padding:126px 0 60px;background:linear-gradient(110deg,#fff 35%,#f0faf3 100%)}
+.hero-grid{gap:0}
+.hero-eyebrow{font-size:15px;letter-spacing:1px;margin-bottom:18px}
+.hero h1{font-size:clamp(42px,6.3vw,72px);line-height:1.3;letter-spacing:-1.8px;font-weight:750}
+.hero h1 em{color:#119553}
+.hero p.lead{font-size:19px;line-height:1.85;max-width:820px;margin:22px 0 26px}
+.hero-cta .btn{font-size:16px;padding:15px 25px;border-radius:11px}
+.hero-cta .btn-green{box-shadow:0 5px 14px #31c27c20}
+.hero-cta .btn-ghost{background:#fff9}
+.sec-head,.f-head,.background-intro{max-width:100%;margin-bottom:30px}
+.sec-head h2,.f-head h2,.background-intro h2{font-size:48px;font-weight:750;letter-spacing:-1px;line-height:1.3;max-width:1050px}
+.sec-tag,.background-kicker{display:inline-flex;align-items:center;border-radius:6px;background:#e3f4e8;border:1px solid #cce8d5;padding:5px 11px;font-size:14px;font-weight:650;letter-spacing:.4px;margin-bottom:16px;color:#167044}
+.sec-head p,.f-head p{font-size:18px;line-height:1.8;max-width:950px;margin-top:16px;color:#536c5c}
+section.block.pain{background:#f3f8f4}
+.background-wrap{max-width:1180px}
+.background-chapter{grid-template-columns:42px minmax(0,1fr);gap:20px;padding:28px;background:#fff;border:1px solid #dfeae2;border-radius:16px;margin-bottom:18px}
+.chapter-number{font-size:16px;font-weight:700;color:#17a461;padding-top:2px}
+.chapter-label{font-size:19px;font-weight:700;margin-bottom:12px}
+.chapter-body h3{font-size:31px;line-height:1.45;margin-bottom:18px}
+.chapter-body p{font-size:17px;line-height:1.9;margin-bottom:15px}
+.chapter-body .chapter-takeaway{font-size:18px;line-height:1.8;background:#f0f8f2;padding:12px 16px;border-radius:0 8px 8px 0;margin-top:18px}
+.lyric-example{padding:16px 0}
+.lyric-example dt{font-size:16px;color:#61766a}
+.lyric-example dd{font-size:18px;font-weight:600}
+.melody-question{background:#eff8f2;border-color:#d5e8dc;padding:22px}
+.melody-question .question-label{font-size:14px;color:#476c54}
+.melody-question p{font-size:18px;line-height:1.8}
+.melody-answers{font-size:16px;line-height:1.7}
+.sharing-gap{margin-top:28px}
+.sharing-gap h4{font-size:26px}
+.sharing-comparison{font-size:16px;margin:18px 0}
+.sharing-comparison th{font-size:15px;padding:14px 16px;background:#e8f5ed}
+.sharing-comparison td{font-size:16px;padding:17px 16px;line-height:1.8}
+.sharing-comparison small{font-size:12px;line-height:1.7;color:#75887b}
+.reply-definition{background:#e7f5ec;border-color:#c6e1ce;padding:24px}
+.reply-definition .definition-label{font-size:15px}
+.reply-definition h4{font-size:29px}
+.reply-definition p{font-size:17px}
+.meme-demo{gap:24px;margin-top:22px}
+.meme-demo figure{max-width:250px}
+.meme-demo img{border-radius:12px}
+.meme-demo figcaption{font-size:14px;line-height:1.7;margin-top:10px}
+.background-close{margin-left:0;border:0;padding:14px 0 0}
+.background-close h3{font-size:30px;text-align:center;line-height:1.5}
+.features{background:#fff}
+.f-cards{gap:18px;grid-template-columns:minmax(0,1fr)}
+.f-card,.f-row2{min-width:0}
+.f-card{padding:30px;border-radius:18px;background:#f9fcfa;border-color:#dbe8df}
+.f-card.full{background:#fff;border-top:3px solid #31c27c}
+.f-card-top{margin-bottom:14px}
+.f-tag,.f-tag.gray{font-size:14px;padding:4px 10px;border-radius:6px;background:#e7f5ec;color:#277144}
+.f-scene{font-size:15px;color:#61776a}
+.f-name{font-size:34px;line-height:1.35;font-weight:700}
+.f-name-sub{font-size:18px;line-height:1.7;margin:9px 0 13px;color:#179657}
+.f-text{font-size:18px;line-height:1.85;max-width:980px}
+.reply-flow{margin-top:24px;padding:24px;background:#f3f9f5;border-color:#d6e8dd}
+.reply-flow-steps li{font-size:18px;min-height:84px;border-color:#badcc6;box-shadow:0 2px 6px #173a2304}
+.flow-index{width:30px;height:30px;font-size:14px;background:#e1f2e6;color:#1d8c4d}
+.flow-decision>svg{fill:#def3e5;stroke:#5eb581;stroke-width:1.6}
+.flow-decision>div{font-size:18px;color:#145a33}
+.flow-branch-label{font-size:16px;padding:4px 16px;background:#d6f0e0;color:#147442}
+.flow-action,.flow-output{font-size:17px;line-height:1.8;padding:19px 21px}
+.flow-output{background:#dbf2e3;border-color:#a5d5b5;color:#146435}
+.stage{background:#f0f7f2}
+#community{background:#f7faf8}
+.demo-layout,.community-screens{grid-template-columns:minmax(0,1fr) 360px;gap:32px 48px;padding:28px 36px;border-radius:20px;border-color:#d3e5d9;background:#fff;box-shadow:0 5px 20px #123d2105}
+.community-demo-toolbar{margin-bottom:0;padding:0 0 20px;gap:18px;border-color:#d9e8df}
+.community-demo-status{font-size:16px;line-height:1.65;color:#36543f}
+.community-demo-controls .btn{padding:11px 17px;font-size:14px}
+.demo-stop{font-size:14px}
+.reply-demo-summary>label{font-size:15px}
+#replyDemoMode{font-size:14px;padding:9px 11px}
+.demo-side .step-tab{min-height:112px;padding:20px;gap:16px;margin-bottom:12px;border-radius:12px;border-color:#dce8df;background:#fbfdfb}
+.demo-side .step-tab:hover{border-color:#8ac5a0;background:#f3faf5}
+.demo-side .step-tab.on{border-color:#70c18e;background:#e4f5eb;box-shadow:inset 4px 0 0 #31c27c}
+.step-tab .n{width:34px;height:34px;font-size:16px;border-radius:9px}
+.step-tab.on .n{background:#24b970;color:#fff}
+.step-tab b{font-size:20px;line-height:1.5;font-weight:700}
+.step-tab small{font-size:16px;line-height:1.65;color:#617769;margin-top:6px}
+.demo-hint,.community-step-side .demo-hint{font-size:15px;padding-top:16px;margin-top:16px;color:#5d7665;line-height:1.75}
+.phone{width:360px;height:740px;font-size:14px;line-height:1.6;box-shadow:0 0 0 1px #263c2d,0 12px 25px #133e2216}
+.demo-pointer-label{font-size:12px}
+.value{background:#edf6f0}
+.loop-wrap{gap:10px;margin-bottom:24px}
+.loop-node{font-size:16px;padding:11px 15px;background:#fff;border-color:#d0e2d6;border-radius:9px}
+.loop-node.hl{background:#31c27c;color:#fff;border-color:#31c27c}
+.loop-arrow{font-size:16px;color:#4e9a68}
+.value-grid{gap:18px}
+.v-card{padding:26px;border-radius:16px;border-color:#d0e3d6;background:#fff}
+.v-card .ico{font-size:15px;background:#e2f4e8;color:#168448;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;margin-bottom:16px}
+.v-card h4{font-size:25px}
+.v-card p{font-size:17px;line-height:1.8;color:#5b7363}
+footer{background:#fff;padding:26px 0;font-size:13px}
+footer .logo{font-size:17px}
+@media(max-width:960px){
+  .hero{padding:112px 0 50px}
+  .hero h1{font-size:clamp(36px,7.5vw,62px)}
+  section.block,section.block.pain{padding:54px 0}
+  .sec-head h2,.f-head h2,.background-intro h2{font-size:42px}
+  .sec-head p,.f-head p{font-size:17px}
+  .demo-layout,.community-screens{grid-template-columns:minmax(0,1fr);gap:24px;padding:24px}
+  .demo-side,.community-step-side{gap:12px}
+  .demo-side .step-tab{min-height:130px;margin-bottom:0;padding:17px;gap:12px}
+  .step-tab b{font-size:18px}
+  .step-tab small{font-size:15px}
+  .community-demo-toolbar{gap:14px;flex-wrap:wrap}
+  .community-demo-controls .btn{font-size:13px}
+  .phone{max-width:100%}
+  .reply-flow-steps li{font-size:16px}
+  .flow-action,.flow-output{font-size:15px}
+}
+@media(max-width:600px){
+  .f-cards{grid-template-columns:minmax(0,1fr)}
+  .wrap,.nav-inner{padding-left:20px;padding-right:20px}
+  .nav-inner{height:62px}
+  .logo{font-size:14px}
+  .nav .btn{font-size:12px;padding:9px 13px}
+  .hero{padding:100px 0 42px}
+  .hero-eyebrow{font-size:13px;margin-bottom:15px}
+  .hero h1{font-size:clamp(24px,7.5vw,38px);letter-spacing:-.7px}
+  .hero p.lead{font-size:16px;line-height:1.8;margin:18px 0 22px}
+  .hero-cta{gap:10px}
+  .hero-cta .btn{font-size:14px;padding:12px 17px}
+  section.block,section.block.pain{padding:42px 0}
+  .sec-head,.f-head,.background-intro{margin-bottom:24px}
+  .sec-head h2,.f-head h2,.background-intro h2{font-size:34px;line-height:1.35;letter-spacing:-.6px}
+  .sec-tag,.background-kicker{font-size:13px;padding:4px 9px;margin-bottom:13px}
+  .sec-head p,.f-head p{font-size:16px;line-height:1.8}
+  .background-chapter{grid-template-columns:1fr;gap:8px;padding:21px 18px;margin-bottom:14px;border-radius:13px}
+  .chapter-number{font-size:14px}
+  .chapter-label{font-size:18px}
+  .chapter-body h3{font-size:27px}
+  .chapter-body p,.chapter-body .chapter-takeaway{font-size:16px;line-height:1.85}
+  .lyric-example dt{font-size:15px}
+  .lyric-example dd{font-size:17px}
+  .melody-question,.reply-definition{padding:17px}
+  .melody-question p,.melody-answers{font-size:15px}
+  .sharing-gap h4{font-size:24px}
+  .sharing-comparison th,.sharing-comparison td{font-size:13px;padding:12px 7px}
+  .sharing-comparison small{font-size:11px}
+  .reply-definition h4{font-size:26px}
+  .reply-definition p{font-size:16px}
+  .meme-demo{gap:12px}
+  .meme-demo figcaption{font-size:12px}
+  .background-close h3{font-size:27px}
+  .f-card{padding:22px 18px;border-radius:14px}
+  .f-name{font-size:29px}
+  .f-tag{font-size:13px}
+  .f-scene{font-size:14px}
+  .f-name-sub{font-size:17px}
+  .f-text{font-size:16px;line-height:1.85}
+  .reply-flow{padding:20px 12px}
+  .reply-flow-steps li{font-size:16px;padding:13px;min-height:70px}
+  .flow-index{width:27px;height:27px;font-size:13px}
+  .flow-decision>div{font-size:15px}
+  .flow-branch-label{font-size:14px}
+  .flow-action,.flow-output{font-size:13px;padding:12px 9px}
+  .demo-layout,.community-screens{padding:20px 12px;gap:22px;border-radius:15px}
+  .demo-side,.community-step-side{gap:10px}
+  .demo-side .step-tab{padding:14px 10px;gap:8px;min-height:156px;border-radius:10px}
+  .step-tab .n{width:25px;height:25px;font-size:13px;flex-shrink:0}
+  .step-tab b{font-size:16px;line-height:1.5}
+  .step-tab small{font-size:13px;line-height:1.65}
+  .demo-hint,.community-step-side .demo-hint{font-size:13px;padding-top:14px}
+  .community-demo-status{font-size:14px}
+  .community-demo-controls .btn{font-size:13px;padding:10px 14px}
+  .demo-stop{font-size:12px}
+  .reply-demo-summary>label{font-size:14px}
+  #replyDemoMode{font-size:13px;padding:9px}
+  .phone{width:min(360px,100%);height:740px}
+  .loop-node{font-size:14px;padding:9px 11px}
+  .loop-arrow{font-size:14px}
+  .v-card{padding:23px}
+  .v-card h4{font-size:23px}
+  .v-card p{font-size:16px}
+  footer{font-size:12px}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================= Nav ================= -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark">♪</span>QQ音乐 · 音乐语言<small>Music as Language</small></div>
+    <div class="nav-links">
+      <a href="#pain">设计理念</a>
+      <a href="#layers">功能概述</a>
+      <a href="#demo">功能演示</a>
+      <a href="#value">产品价值</a>
+    </div>
+    <a class="btn btn-green" href="#demo">体验 Demo</a>
+  </div>
+</nav>
+
+<!-- ================= Hero ================= -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="hero-eyebrow">QQ 音乐 · 黑客松作品</p>
+      <h1>下一句话，<em>让音乐来说</em></h1>
+      <p class="lead">选中一句歌词，连同对应的原声歌曲片段一起发给朋友。做成音乐表情包，用音乐表达情绪。</p>
+      <div class="hero-cta">
+        <a class="btn btn-green btn-lg" href="#demo">▶ 体验功能 Demo</a>
+        <a class="btn btn-ghost btn-lg" href="#layers">了解产品功能</a>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<!-- ================= Background ================= -->
+<section class="block pain" id="pain" aria-labelledby="background-title">
+  <div class="wrap background-wrap">
+    <div class="background-intro">
+      <div class="background-kicker">01 / 需求起源</div>
+      <h2 id="background-title">音乐和歌词也是我们习惯使用的语言。</h2>
+    </div>
+
+    <article class="background-chapter">
+      <div class="chapter-number">01</div>
+      <div class="chapter-body">
+        <div class="chapter-label">为什么要单句分享</div>
+        <p>一些经典歌词已经走出了歌曲本身，融入日常对话，成为彼此熟悉的梗和表达方式。借一句歌词，我们可以安慰、祝福，也可以调侃；熟悉这句歌的人，往往能接住其中的情绪和隐喻。</p>
+        <dl class="lyric-examples" aria-label="聊天场景与歌词回复示例">
+          <div class="lyric-example"><dt>明天要放十一假期了</dt><dd>「等了好久，终于等到今天」</dd></div>
+          <div class="lyric-example"><dt>过年时，想给大家讨个好彩头</dt><dd>「财神来敲我家门」</dd></div>
+          <div class="lyric-example"><dt>朋友的生日到了</dt><dd>「今天你生日，送来我祝福」</dd></div>
+        </dl>
+        <p>这些时刻，歌词可以帮助我们轻松、准确、有趣地进行表达。它们也容易被读懂和接收。</p>
+        <p class="chapter-takeaway">因此，我们希望把音乐分享的最小单位，从<strong>一整首歌</strong>缩小到<strong>一句歌词</strong>。</p>
+      </div>
+    </article>
+
+    <article class="background-chapter" aria-labelledby="melody-title">
+      <div class="chapter-number">02</div>
+      <div class="chapter-body">
+        <div class="chapter-label">为什么要有旋律</div>
+        <h3 id="melody-title">我们想起那句话时，往往是唱出来的。</h3>
+        <div class="melody-question">
+          <span class="question-label">先做一个小测试</span>
+          <p>请读出上述提到的三句歌词：「等了好久，终于等到今天」「财神来敲我家门」「今天你生日，送来我祝福」</p>
+          <div class="melody-answers"><span>A. 轻松自然地朗读出来</span><span>B. 不自觉唱了起来或努力控制自己按照说话的语气朗读</span></div>
+        </div>
+        <p>在我们对 <strong>20 位受访者</strong>的访谈中，几乎所有人都选择了后者。这让我们看到：对这些熟悉的歌词而言，旋律是人们理解和传播它们的重要部分。</p>
+        <p>同样一句<em>等了好久，终于等到今天</em>，读出来和听到熟悉的原唱，是两种不同的感受。<strong>旋律、节奏和唱腔，让对方更容易 get 这个梗，接住这份情绪</strong>。</p>
+        <p class="chapter-takeaway">我们真正想发送的，是<strong>一句歌词 + 它被唱出来的声音</strong>。</p>
+
+        <div class="sharing-gap">
+          <h4>现在的音乐app支持满足这样的需求吗？</h4>
+          <p>目前音乐平台的常见分享方式总结。</p>
+          <table class="sharing-comparison">
+            <thead><tr><th scope="col">分享方式</th><th scope="col">能带来什么</th><th scope="col">作为聊天回复的缺口</th></tr></thead>
+            <tbody>
+              <tr><td>整首歌</td><td>完整的音乐和原唱</td><td>若没有定位到那一句，对方还要打开歌曲、寻找片段，才能知道你想表达什么。</td></tr>
+              <tr><td>歌词海报</td><td>直接展示选中的歌词</td><td>能看见这句话，却听不到对应的旋律和唱腔；声音需要对方自己在脑海里补全。</td></tr>
+              <tr><td>歌曲视频</td><td>同时呈现画面和声音</td><td>为一句临时回复寻找或制作合适的片段，会增加步骤；打开视频观看，也更容易打断接话的节奏。</td></tr>
+            </tbody>
+          </table>
+          <p>这些方式适合分享和欣赏音乐，但不能满足<strong>用某句歌词回复，把音乐融于聊天</strong>这个具体场景里的需求。</p>
+        </div>
+        <div class="reply-definition">
+          <div class="definition-label">由此，我们提出<strong>音乐回复</strong></div>
+          <h4>一句歌词，带上对应的原声。</h4>
+          <p>选中想说的那一句，自动匹配对应原声片段，直接发到聊天中。对方先看懂歌词，再点一下听到声音。</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="background-chapter" aria-labelledby="meme-title">
+      <div class="chapter-number">03</div>
+      <div class="chapter-body">
+        <div class="chapter-label">为什么要有表情包</div>
+        <h3 id="meme-title">搭配表情包使用效果更佳。</h3>
+        <p>有了「歌词 + 原声」，音乐回复已经可以完成表达。进一步与表情包结合，是希望让这种回复更有趣、更有感染力，也更方便在聊天中收藏和复用。</p>
+        <p>例如，同一句“等了好久，终于等到今天”配上不同的表情包可以表达不一样的情绪。</p>
+        <div class="meme-demo">
+          <figure><img src="assets/img/meme-cheer.jpg" alt="欢呼表情包：等了好久终于等到今天"><figcaption>配上欢呼的图片，可以表达放假的兴奋。</figcaption></figure>
+          <figure><img src="assets/img/meme-tired.jpg" alt="疲惫表情包：等了好久终于等到今天"><figcaption>配上一张疲惫的脸，又多了一层总算熬到了的自嘲。</figcaption></figure>
+        </div>
+      </div>
+    </article>
+
+    <div class="background-close">
+      <h3>所以，我们想做的是：让音乐成为<span>一句可以直接参与聊天的语言。</span></h3>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Features ================= -->
+<section class="block features" id="layers">
+  <div class="wrap">
+    <div class="f-head">
+      <div class="sec-tag">02 / 功能概述</div>
+      <h2>两种形式，让音乐直接参与对话</h2>
+    </div>
+
+    <div class="f-cards">
+      <!-- 左卡：音乐回复 -->
+      <article class="f-card full">
+        <div class="f-card-top">
+          <span class="f-tag">核心能力</span>
+        </div>
+        <h3 class="f-name">音乐回复</h3>
+        <div class="f-name-sub">把一句歌，直接发出去。</div>
+        <p class="f-text">听歌时遇到一句特别想分享的歌词，长按它，QQ音乐自动带上对应的 <b>原声片段</b>。</p>
+
+        <div class="reply-flow" role="group" aria-label="音乐回复流程：选中歌词后，可发送音乐表情包或歌词文字">
+          <ol class="reply-flow-steps">
+            <li><span class="flow-index">1</span><span>听到喜欢的歌词</span></li>
+            <li><span class="flow-index">2</span><span>长按歌词</span></li>
+            <li><span class="flow-index">3</span><span>分享这一句</span></li>
+          </ol>
+          <div class="flow-route" aria-hidden="true"><svg viewBox="0 0 1000 52" preserveAspectRatio="none"><path d="M833 0V18H500V49"/><path d="m495 44 5 5 5-5"/></svg></div>
+          <div class="flow-decision">
+            <svg viewBox="0 0 280 112" aria-hidden="true"><path d="M140 2 278 56 140 110 2 56Z"/></svg>
+            <div><span class="flow-index">4</span><span>做成音乐表情包？</span></div>
+          </div>
+          <div class="flow-split-stem" aria-hidden="true"></div>
+          <div class="reply-flow-branches">
+            <div class="flow-branch">
+              <span class="flow-branch-label yes">是</span>
+              <div class="flow-action">按歌词自动匹配可选的表情包图片（参考微信表情包搜索功能），或自定义图片</div>
+              <div class="flow-down" aria-hidden="true">↓</div>
+              <div class="flow-output">发送带原声音轨的音乐表情包</div>
+            </div>
+            <div class="flow-branch">
+              <span class="flow-branch-label no">否</span>
+              <div class="flow-output plain">直接发送带原声音轨的歌词文字</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 扩展能力：音乐表情包社区 -->
+      <div class="f-row2">
+        <article class="f-card">
+          <div class="f-card-top">
+            <span class="f-tag gray">扩展能力</span>
+            <span class="f-scene">想让这句歌词更好玩、更好传</span>
+          </div>
+          <h3 class="f-name">音乐表情包社区</h3>
+          <div class="f-name-sub">让音乐表情包流传起来。</div>
+          <p class="f-text">为歌词配上图片，做成带原声的音乐表情包。自己可以发布，也可以发现、收藏、复用别人做的好梗。</p>
+        </article>
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Demo Stage ================= -->
+<section class="block stage" id="demo">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">03 / 音乐回复演示</div>
+      <h2>四个步骤，体验音乐回复完整链路</h2>
+      <p>从选歌词、生成文字/表情包回复，到聊天发送与回流完整歌曲，完整体验「音乐回复」的使用链路</p>
+    </div>
+    <div class="demo-layout" id="replyAutoStage">
+      <div class="community-demo-toolbar reply-demo-toolbar">
+        <div class="reply-demo-summary">
+          <label for="replyDemoMode">演示形式</label>
+          <select id="replyDemoMode" aria-label="音乐回复演示形式">
+            <option value="both">完整演示：文字回复 + 音乐表情包</option>
+            <option value="text">仅演示文字回复</option>
+            <option value="sticker">仅演示音乐表情包</option>
+          </select>
+          <div class="community-demo-status"><span class="demo-status-dot"></span><span id="replyDemoStatus" role="status" aria-live="polite">两种形式，都包含选句、确认、接收和回流完整歌曲</span></div>
+        </div>
+        <div class="community-demo-controls reply-demo-controls">
+          <button class="btn btn-green" id="replyDemoPlay" type="button">▶ 播放 Demo</button>
+          <button class="btn btn-ghost" id="replyDemoReplay" type="button" disabled>重新播放</button>
+          <button class="demo-stop" id="replyDemoStop" type="button" hidden>结束演示</button>
+        </div>
+      </div>
+      <div class="demo-side">
+        <button class="step-tab on" data-go="0"><span class="n">1</span><span><b>QQ音乐播放页</b><small>长按歌词「分享这一句」</small></span></button>
+        <button class="step-tab" data-go="1"><span class="n">2</span><span><b>片段确认页</b><small>选择文字或音乐表情包回复</small></span></button>
+        <button class="step-tab" data-go="2"><span class="n">3</span><span><b>聊天接收场景</b><small>点击回复内容下方的播放键可播放音乐片段</small></span></button>
+        <button class="step-tab" data-go="0" id="tabLoop"><span class="n">4</span><span><b>回流完整歌曲</b><small>聊天中点「QQ音乐」返回播放页</small></span></button>
+        <div class="demo-hint" id="demoHint"><b>💡 操作提示：</b>点击「播放 Demo」依次体验文字回复与音乐表情包。也可手动长按歌词，选择分享形式。</div>
+      </div>
+
+      <div class="phone" id="replyDemoPhone">
+        <div class="notch"></div>
+        <div class="phone-screen">
+          <div class="community-demo-pointer" id="replyDemoPointer" hidden aria-hidden="true">
+            <svg class="demo-pointer-arrow" viewBox="0 0 28 34"><path d="M3 2v25l6-6 5 11 5-2-5-10h9Z" fill="#17251e" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+            <span class="demo-click-ring"></span>
+            <svg class="demo-hold-ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18"/></svg>
+            <span class="demo-pointer-label" id="replyPointerLabel"></span>
+          </div>
+
+          <!-- ===== S1 Player ===== -->
+          <div class="screen on" id="scr0">
+            <div class="app player">
+              <div class="p-bg"></div>
+              <div class="statusbar">
+                <span>9:41</span>
+                <span class="sb-ic">
+                  <svg width="18" height="11" viewBox="0 0 18 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+                  <svg width="16" height="12" viewBox="-2 0 20 12" fill="currentColor"><path d="M8 2.5C11.8 2.5 15.2 4.2 17.3 6.7L16 8.2C14.2 6 11.3 4.7 8 4.7S1.8 6 0 8.2L-1.3 6.7C.8 4.2 4.2 2.5 8 2.5Z"/><path d="M8 5.6c2.2 0 4.2.9 5.6 2.4l-1.3 1.5C11.2 8.4 9.7 7.8 8 7.8s-3.2.6-4.3 1.7L2.4 8C3.8 6.5 5.8 5.6 8 5.6Z"/><circle cx="8" cy="10.3" r="1.2"/></svg>
+                  <svg width="25" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" opacity=".4"/></svg>
+                </span>
+              </div>
+              <div class="p-header">
+                <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+                <div class="p-more"><i></i><i></i><i></i></div>
+                <div class="p-acts">
+                  <span class="ic green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
+                  <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+                  <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></span>
+                </div>
+              </div>
+              <div class="p-title">
+                <h2>明天会更好</h2>
+                <div class="p-artist">蔡琴 / 余天 / 苏芮 / 潘越云 / 甄妮 / 李建复… <span class="team">制作团队 ›</span></div>
+              </div>
+              <div class="p-credits">
+                <div class="row">词：<span class="av"></span>罗大佑 / 张大春 / 许乃胜 / 李寿全 / 邱复生 / 张艾嘉 / 詹宏志</div>
+                <div class="row">曲：<span class="av"></span>罗大佑</div>
+                <div class="row">编曲：<span class="av"></span>陈志远</div>
+              </div>
+              <div class="lyrics" id="lyrics">
+                <div class="lyric-list" id="lyricList"></div>
+              </div>
+              <div class="p-bottom">
+                <div class="p-tools">
+                  <span class="tbtn">弹</span>
+                  <span class="tbtn">伴<span class="badge">off</span></span>
+                  <span class="tbtn">词</span>
+                  <span class="tbtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+                  <span class="tbtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+                </div>
+                <span class="main-play" id="mainPlay"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg></span>
+              </div>
+            </div>
+            <div class="p-popmask" id="popMask"></div>
+            <div class="p-popmenu" id="popMenu">
+              <button class="pm-item hl" id="popShare"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19a3.5 3.5 0 1 1-3.5-3.5A3.5 3.5 0 0 1 9 19Z"/><path d="M12.2 5.2v10.4l-2.2.8V6.6c0-1.2.9-2 2.2-1.4Z"/><path d="M12.2 5.2c2.8.7 4.5 2.2 5 4.5-2.2-.5-3.8.2-5 1.6Z"/></svg>分享这一句</button>
+              <div class="pm-sep"></div>
+              <button class="pm-item">复制歌词</button>
+              <button class="pm-item">翻译</button>
+              <button class="pm-item">歌词报错</button>
+            </div>
+          </div>
+
+          <!-- ===== S2 Confirm ===== -->
+          <div class="screen" id="scr1">
+            <div class="app confirm">
+              <div class="statusbar">
+                <span>9:41</span>
+                <span class="sb-ic">
+                  <svg width="18" height="11" viewBox="0 0 18 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+                  <svg width="16" height="12" viewBox="-2 0 20 12" fill="currentColor"><path d="M8 2.5C11.8 2.5 15.2 4.2 17.3 6.7L16 8.2C14.2 6 11.3 4.7 8 4.7S1.8 6 0 8.2L-1.3 6.7C.8 4.2 4.2 2.5 8 2.5Z"/><path d="M8 5.6c2.2 0 4.2.9 5.6 2.4l-1.3 1.5C11.2 8.4 9.7 7.8 8 7.8s-3.2.6-4.3 1.7L2.4 8C3.8 6.5 5.8 5.6 8 5.6Z"/><circle cx="8" cy="10.3" r="1.2"/></svg>
+                  <svg width="25" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" opacity=".4"/></svg>
+                </span>
+              </div>
+              <div class="sub-header"><span class="back" data-back="0"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 1 2 10l7 9"/></svg></span><b>分享这一句</b><span class="ph"></span></div>
+              <div class="confirm-body">
+                <div class="cf-preview">
+                  <div class="ly" id="cfLyric">轻轻敲醒沉睡的心灵</div>
+                  <div class="prow">
+                    <span class="qq"><span class="qq-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 19a3.5 3.5 0 1 1-3.5-3.5A3.5 3.5 0 0 1 9 19Z"/><path d="M12.2 5.2v10.4l-2.2.8V6.6c0-1.2.9-2 2.2-1.4Z"/><path d="M12.2 5.2c2.8.7 4.5 2.2 5 4.5-2.2-.5-3.8.2-5 1.6Z"/></svg></span>QQ音乐</span>
+                    <span class="cf-play-btn" id="cfPreviewPlay"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg></span>
+                  </div>
+                </div>
+                <div class="sticker-toggle">
+                  <span class="tx">做成音乐表情包<small>给本句歌词增加配图，生成一张音乐表情包</small></span>
+                  <span class="switch" id="stickerSwitch"></span>
+                </div>
+                <div class="sticker-toggle sub-toggle" id="lyricToggleOption" hidden>
+                  <span class="tx">显示歌词<small>在表情包图片上显示本句歌词</small></span>
+                  <span class="switch on" id="lyricSwitch"></span>
+                </div>
+                <div class="sticker-panel" id="stickerPanel">
+                  <div class="sticker-bgs">
+                    <div class="sticker-bg sbg1 on" data-bg="assets/img/stk-dog.png"></div>
+                    <div class="sticker-bg sbg2" data-bg="assets/img/stk-cow.png"></div>
+                    <div class="sticker-bg sbg3" data-bg="upload"><span class="up-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span></div>
+                  </div>
+                  <input type="file" id="stickerUpload" accept="image/*" capture="environment" style="display:none">
+                </div>
+              </div>
+              <div class="confirm-foot">
+                <button class="btn btn-green" id="cfShare">分享给好友</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== S3 Chat ===== -->
+          <div class="screen" id="scr2">
+            <div class="app chat">
+              <div class="statusbar" style="background:#ededed;color:#000">
+                <span>9:41</span>
+                <span class="sb-ic">
+                  <svg width="18" height="11" viewBox="0 0 18 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+                  <svg width="16" height="12" viewBox="-2 0 20 12" fill="currentColor"><path d="M8 2.5C11.8 2.5 15.2 4.2 17.3 6.7L16 8.2C14.2 6 11.3 4.7 8 4.7S1.8 6 0 8.2L-1.3 6.7C.8 4.2 4.2 2.5 8 2.5Z"/><path d="M8 5.6c2.2 0 4.2.9 5.6 2.4l-1.3 1.5C11.2 8.4 9.7 7.8 8 7.8s-3.2.6-4.3 1.7L2.4 8C3.8 6.5 5.8 5.6 8 5.6Z"/><circle cx="8" cy="10.3" r="1.2"/></svg>
+                  <svg width="25" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" opacity=".4"/></svg>
+                </span>
+              </div>
+              <div class="chat-header"><span class="back" data-back="0"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 1 2 10l7 9"/></svg></span><b>小航</b><span class="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="20" cy="12" r="1.8"/></svg></span></div>
+              <div class="chat-body" id="chatBody">
+                <div class="time-sep">晚上 22:08</div>
+                <div class="msg">
+                  <div class="avatar f">航</div>
+                  <div class="bubble arrow-l">明天要早起赶飞机，定了三个闹钟 真怕起不来</div>
+                </div>
+                <!-- dynamic music card injected here -->
+                <div class="msg" id="friendReply" style="display:none">
+                  <div class="avatar f">航</div>
+                  <div class="bubble arrow-l">你可真损哈哈哈哈哈哈哈哈哈哈哈！！我要把这个设置为起床铃声</div>
+                </div>
+              </div>
+              <div class="chat-input">
+                <span class="wi voice"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9Z" fill="currentColor" stroke="none"/><path d="M16.5 9.3a3.8 3.8 0 0 1 0 5.4"/><path d="M19 7a7 7 0 0 1 0 10"/></svg></span>
+                <div class="field"></div>
+                <span class="wi"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.4a4.6 4.6 0 0 0 7 0"/><circle cx="9.2" cy="9.6" r="1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="9.6" r="1" fill="currentColor" stroke="none"/></svg></span>
+                <span class="wp"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.3"/><path d="M12 8v8M8 12h8"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Music Sticker Community ================= -->
+<section class="block" id="community">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">04 / 音乐表情包社区</div>
+      <h2>音乐表情包社区</h2>
+      <p>QQ音乐与微信的联动功能。在 QQ音乐首页导航即可进入音乐表情包社区，发现、点赞、使用大家创作的音乐表情包。在微信中将音乐表情包添加至表情库即可复用表情</p>
+    </div>
+    <div class="community-screens" id="communityAutoStage">
+      <div class="community-demo-toolbar">
+        <div class="community-demo-status"><span class="demo-status-dot"></span><span id="communityDemoStatus" role="status" aria-live="polite">一键播放，体验完整流程</span></div>
+        <div class="community-demo-controls">
+          <button class="btn btn-green" id="communityDemoPlay" type="button">▶ 播放 Demo</button>
+          <button class="btn btn-ghost" id="communityDemoReplay" type="button" disabled>重新播放</button>
+          <button class="demo-stop" id="communityDemoStop" type="button" hidden>结束演示</button>
+        </div>
+      </div>
+      <div class="demo-side community-step-side" aria-label="音乐表情包社区演示步骤">
+        <button class="step-tab on" data-community-step="0" aria-current="step"><span class="n">1</span><span><b>发现热门表情包</b><small>在 QQ音乐社区浏览大家创作的音乐表情包</small></span></button>
+        <button class="step-tab" data-community-step="1"><span class="n">2</span><span><b>试听、点赞与使用</b><small>点击播放键听音轨，喜欢就点赞，也可选择使用</small></span></button>
+        <button class="step-tab" data-community-step="2"><span class="n">3</span><span><b>分享给微信好友</b><small>点击「使用」，将表情包与原声发送给小航</small></span></button>
+        <button class="step-tab" data-community-step="3"><span class="n">4</span><span><b>收藏表情，再次使用</b><small>长按添加表情，方便复用。</small></span></button>
+        <div class="demo-hint"><b>操作提示：</b>点击「播放 Demo」自动演示鼠标操作，也可以点击步骤框手动体验。</div>
+      </div>
+      <div class="community-screen">
+    <div class="phone" id="wxCollectionPhone">
+      <div class="notch"></div>
+      <div class="phone-screen">
+        <div class="community-demo-pointer" id="communityDemoPointer" hidden aria-hidden="true">
+          <svg class="demo-pointer-arrow" viewBox="0 0 28 34"><path d="M3 2v25l6-6 5 11 5-2-5-10h9Z" fill="#17251e" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+          <span class="demo-click-ring"></span>
+          <svg class="demo-hold-ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18"/></svg>
+          <span class="demo-pointer-label" id="communityPointerLabel"></span>
+        </div>
+
+        <!-- 态1：QQ音乐首页 -->
+        <div class="cscreen" id="commHome">
+          <div class="qm-statusbar">
+            <span>09:36</span>
+            <span class="sb-ic">
+              <svg width="18" height="11" viewBox="0 0 18 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+              <svg width="16" height="12" viewBox="-2 0 20 12" fill="currentColor"><path d="M8 2.5C11.8 2.5 15.2 4.2 17.3 6.7L16 8.2C14.2 6 11.3 4.7 8 4.7S1.8 6 0 8.2L-1.3 6.7C.8 4.2 4.2 2.5 8 2.5Z"/><path d="M8 5.6c2.2 0 4.2.9 5.6 2.4l-1.3 1.5C11.2 8.4 9.7 7.8 8 7.8s-3.2.6-4.3 1.7L2.4 8C3.8 6.5 5.8 5.6 8 5.6Z"/><circle cx="8" cy="10.3" r="1.2"/></svg>
+              <svg width="25" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="qm-search">
+            <span class="claw"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="7" r="2.2"/><circle cx="16" cy="7" r="2.2"/><circle cx="5" cy="13" r="2.2"/><circle cx="19" cy="13" r="2.2"/><path d="M12 11c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5Z"/></svg></span>
+            <div class="capsule"><span style="color:#b4bac1">←</span><span style="overflow:hidden;text-overflow:ellipsis">推荐和<b style="flex-shrink:0">《被驯服的象》</b>类似的歌</span></div>
+            <span class="rbtn dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19a3.5 3.5 0 1 1-3.5-3.5A3.5 3.5 0 0 1 9 19Z"/><path d="M12.2 5.2v10.4l-2.2.8V6.6c0-1.2.9-2 2.2-1.4Z"/><path d="M12.2 5.2c2.8.7 4.5 2.2 5 4.5-2.2-.5-3.8.2-5 1.6Z"/></svg></span>
+            <span class="rbtn green">免</span>
+          </div>
+          <div class="qm-cats">
+            <span class="qm-cat on">推荐</span>
+            <span class="qm-cat">刷歌</span>
+            <span class="qm-cat">乐馆</span>
+            <span class="qm-cat" id="commEntry">音乐表情包社区</span>
+            <span class="qm-cat">听书</span>
+            <span class="qm-cat">AI作歌</span>
+            <span class="qm-cat">金曲</span>
+          </div>
+          <div class="qm-body">
+            <div class="qm-banners">
+              <div class="qm-ban foryou">
+                <div class="bt">For<br>You</div>
+                <img class="bimg" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=dreamy%20purple%203d%20maze%20album%20cover%20art%2C%20soft%20gradient%20sky%2C%20minimal%20surreal%20render&image_size=square" alt="">
+                <div class="bfoot">猜你爱茶·沉浸刷歌<br>迷宫 - step.jad依加</div>
+                <span class="bplay"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg></span>
+              </div>
+              <div class="qm-ban daily">
+                <div class="bt">Daily<br>30</div>
+                <img class="bimg" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=warm%20cozy%20portrait%20of%20young%20woman%20listening%20to%20music%2C%20soft%20window%20light%2C%20film%20photography%20style&image_size=square" alt="">
+                <div class="bfoot">每日30首<br>偶阵雨 - 梁静茹</div>
+                <span class="bplay"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg></span>
+              </div>
+            </div>
+            <div class="qm-secline">
+              <h4>早上好，先听一首✨</h4>
+              <span class="mini"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg></span>
+              <span class="x">✕</span>
+            </div>
+            <div class="qm-song">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=dim%20moody%20portrait%20of%20female%20singer%2C%20blue%20stage%20light%2C%20album%20cover%20style&image_size=square" alt="">
+              <div class="mid">
+                <div class="t">记得<span class="tg">网络热歌辜负新人</span></div>
+                <div class="a">张惠妹</div>
+              </div>
+              <span class="love"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>330w+</span>
+            </div>
+            <div class="qm-song">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=gentle%20portrait%20of%20male%20singer%20with%20guitar%2C%20warm%20brown%20tones%2C%20album%20cover%20style&image_size=square" alt="">
+              <div class="mid">
+                <div class="t">找到你是我最伟大的成功<span class="tg">评论999+</span></div>
+                <div class="a">古巨基</div>
+              </div>
+              <span class="love"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>88w+</span>
+            </div>
+            <div class="qm-song">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=concert%20stage%20with%20blue%20spotlights%20and%20crowd%2C%20live%20music%20performance%2C%20atmospheric&image_size=square" alt="">
+              <div class="mid">
+                <div class="t">蜕变 (Live)<span class="tg">故事人心的音乐</span></div>
+                <div class="a">欧阳娜娜 / 周震南 / 高嘉朗 / 张远 / 赵磊</div>
+              </div>
+              <span class="love"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>170w+</span>
+            </div>
+            <div class="qm-secline">
+              <h4>推荐今日专属直播</h4>
+              <span class="x">✕</span>
+            </div>
+            <div class="qm-live-grid">
+              <div class="qm-live">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=soft%20healing%20anime%20illustration%20of%20girl%20by%20window%20with%20plants%2C%20pastel%20green%20tones%2C%20peaceful&image_size=portrait_4_3" alt="">
+                <span class="lv-t">治愈の歌</span>
+              </div>
+              <div class="qm-live">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=fashionable%20young%20woman%20wearing%20sunglasses%20on%20city%20street%2C%20sunny%20day%2C%20street%20photography&image_size=portrait_4_3" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="qm-playbar">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ocean%20waves%20at%20dusk%2C%20calm%20sea%2C%20soft%20purple%20sunset%2C%20minimal%20album%20cover&image_size=square" alt="">
+            <div class="tt">1.海浪细语 - 人人娱乐</div>
+            <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg></span>
+            <span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></span>
+            <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+          </div>
+          <div class="qm-tabbar">
+            <span class="qm-tab on"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5Z"/></svg></span>首页</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none"/></svg></span>视频</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4h4l5 4V6L8 10Z" fill="currentColor" stroke="none"/><path d="M16.5 9.5a4 4 0 0 1 0 5"/></svg></span>刷歌</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.3l6.1-.7Z"/></svg></span>星光</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.5-3.5 4.2-5 7.5-5s6 1.5 7.5 5"/></svg></span>我的</span>
+          </div>
+        </div>
+
+        <!-- 态2：音乐表情包社区 -->
+        <div class="cscreen on" id="commPage">
+          <div class="qm-statusbar">
+            <span>09:36</span>
+            <span class="sb-ic">
+              <svg width="18" height="11" viewBox="0 0 18 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+              <svg width="16" height="12" viewBox="-2 0 20 12" fill="currentColor"><path d="M8 2.5C11.8 2.5 15.2 4.2 17.3 6.7L16 8.2C14.2 6 11.3 4.7 8 4.7S1.8 6 0 8.2L-1.3 6.7C.8 4.2 4.2 2.5 8 2.5Z"/><path d="M8 5.6c2.2 0 4.2.9 5.6 2.4l-1.3 1.5C11.2 8.4 9.7 7.8 8 7.8s-3.2.6-4.3 1.7L2.4 8C3.8 6.5 5.8 5.6 8 5.6Z"/><circle cx="8" cy="10.3" r="1.2"/></svg>
+              <svg width="25" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="qm-search">
+            <span class="claw" id="commBack" style="cursor:pointer" title="返回"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></span>
+            <div class="capsule"><span style="color:#b4bac1">←</span><span style="overflow:hidden;text-overflow:ellipsis">推荐和<b style="flex-shrink:0">《被驯服的象》</b>类似的歌</span></div>
+            <span class="rbtn dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19a3.5 3.5 0 1 1-3.5-3.5A3.5 3.5 0 0 1 9 19Z"/><path d="M12.2 5.2v10.4l-2.2.8V6.6c0-1.2.9-2 2.2-1.4Z"/><path d="M12.2 5.2c2.8.7 4.5 2.2 5 4.5-2.2-.5-3.8.2-5 1.6Z"/></svg></span>
+            <span class="rbtn green">免</span>
+          </div>
+          <div class="qm-cats">
+            <span class="qm-cat">推荐</span>
+            <span class="qm-cat">刷歌</span>
+            <span class="qm-cat">乐馆</span>
+            <span class="qm-cat on" id="commCatOn">音乐表情包社区</span>
+            <span class="qm-cat">听书</span>
+            <span class="qm-cat">AI作歌</span>
+            <span class="qm-cat">金曲</span>
+          </div>
+          <div class="qm-body" style="padding:0">
+            <div class="qm-hero">
+              <div>
+                <h3>音乐表情包社区</h3>
+                <div class="sub">发现、收藏、分享会唱歌的表情包 <span class="note">♪</span></div>
+              </div>
+              <div class="rside">
+                <span class="qm-pub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>发布</span>
+              </div>
+            </div>
+            <div class="qm-ftabs">
+              <span class="qm-ftab on">推荐</span>
+              <span class="qm-ftab">开心</span>
+              <span class="qm-ftab">治愈</span>
+              <span class="qm-ftab">想你</span>
+              <span class="qm-ftab">庆祝</span>
+              <span class="qm-ftab">搞笑</span>
+              <span class="qm-ftab">emo</span>
+              <span class="qm-ftab">全部 ⌄</span>
+            </div>
+            <div class="qm-hot">
+              <span class="fire">🔥</span>
+              <div>
+                <div class="ht">热门表情包排行</div>
+                <div class="hs">大家都在用的音乐表情包</div>
+              </div>
+              <div class="thumbs">
+                <span class="th"><img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cool%20cat%20wearing%20sunglasses%20meme%20photo%2C%20funny%20expression&image_size=square" alt=""><span>超开心!</span></span>
+                <span class="th"><img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20pink%20axolotl%20plush%20cheering%20with%20tiny%20fist%2C%20kawaii%20meme&image_size=square" alt=""><span>加油鸭~</span></span>
+                <span class="th"><img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=smiling%20shiba%20dog%20with%20headphones%20listening%20to%20music%2C%20warm%20photo&image_size=square" alt=""><span>在听歌♪</span></span>
+              </div>
+              <span class="more">更多 ›</span>
+            </div>
+            <div class="qm-grid">
+              <div class="qm-card" data-audio="assets/audio/qinghuaci.m4a">
+                <div class="imgwrap">
+                  <img src="assets/img/comm-rain.png" alt="">
+                  <span class="dur"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>5s</span>
+                </div>
+                <div class="cb">
+                  <div class="tt"><b>天青色等烟雨，而我在等你</b><span class="dots">⋯</span></div>
+                  <div class="src">《青花瓷》· 周杰伦</div>
+                  <span class="tag miss"># 想你</span>
+                  <div class="foot">
+                    <span class="avatar" style="background:linear-gradient(150deg,#ffb56b,#f78e2e)">梨</span>
+                    <div class="who"><div class="n">阿梨</div><div class="c">3.2万次使用</div></div>
+                    <div class="fbtns">
+                      <span class="loveb"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>1.2万</span>
+                      <span class="use">使用</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="qm-card" data-audio="assets/audio/woxiangxin.m4a">
+                <div class="imgwrap">
+                  <img src="assets/img/comm-sun.png" alt="">
+                  <span class="dur"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>5s</span>
+                </div>
+                <div class="cb">
+                  <div class="tt"><b>想飞上天，和太阳肩并肩</b><span class="dots">⋯</span></div>
+                  <div class="src">《我相信》· 杨培安</div>
+                  <span class="tag encour"># 燃</span>
+                  <div class="foot">
+                    <span class="avatar" style="background:linear-gradient(150deg,#7cc4ff,#3d97f5)">凯</span>
+                    <div class="who"><div class="n">冲鸭小凯</div><div class="c">2.9万次使用</div></div>
+                    <div class="fbtns">
+                      <span class="loveb"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>9872</span>
+                      <span class="use">使用</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="qm-card" data-audio="assets/audio/mo.m4a">
+                <div class="imgwrap">
+                  <img src="assets/img/comm-fish.png" alt="">
+                  <span class="dur"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>7s</span>
+                </div>
+                <div class="cb">
+                  <div class="tt"><b>忍不住化身一条固执的鱼</b><span class="dots">⋯</span></div>
+                  <div class="src">《默》· 那英</div>
+                  <span class="tag miss"># emo</span>
+                  <div class="foot">
+                    <span class="avatar" style="background:linear-gradient(150deg,#b39df1,#7b6cf0)">深</span>
+                    <div class="who"><div class="n">深海不蓝</div><div class="c">2.1万次使用</div></div>
+                    <div class="fbtns">
+                      <span class="loveb"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>1.7万</span>
+                      <span class="use">使用</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="qm-card" data-audio="assets/audio/wobiaolijie.m4a">
+                <div class="imgwrap">
+                  <img src="assets/img/comm-ok.png" alt="">
+                  <span class="dur"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>2s</span>
+                </div>
+                <div class="cb">
+                  <div class="tt"><b>我表示理解</b><span class="dots">⋯</span></div>
+                  <div class="src">《我表示理解》· 单依纯</div>
+                  <span class="tag morning"># 治愈</span>
+                  <div class="foot">
+                    <span class="avatar" style="background:linear-gradient(150deg,#ffd66b,#f5a623)">橘</span>
+                    <div class="who"><div class="n">橘子汽水铺</div><div class="c">1.4万次使用</div></div>
+                    <div class="fbtns">
+                      <span class="loveb"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>1.2万</span>
+                      <span class="use">使用</span>
+                    </div>
+                  </div>
+                </div>
+              </div>              <div class="qm-card" data-audio="assets/audio/clip-qingqing.m4a">
+                <div class="imgwrap">
+                  <img src="assets/img/stk-dog.png" alt="">
+                  <span class="dur"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>8s</span>
+                </div>
+                <div class="cb">
+                  <div class="tt"><b>轻轻敲醒沉睡的心灵</b><span class="dots">⋯</span></div>
+                  <div class="src">《明天会更好》· 华语群星</div>
+                  <span class="tag morning"># 治愈</span>
+                  <div class="foot">
+                    <span class="avatar" style="background:linear-gradient(150deg,#ffd66b,#f5a623)">橘</span>
+                    <div class="who"><div class="n">橘子汽水铺</div><div class="c">1.4万次使用</div></div>
+                    <div class="fbtns">
+                      <span class="loveb"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg>1.2万</span>
+                      <span class="use">使用</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qm-playbar">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ocean%20waves%20at%20dusk%2C%20calm%20sea%2C%20soft%20purple%20sunset%2C%20minimal%20album%20cover&image_size=square" alt="">
+            <div class="tt">1.海浪细语 - 人人娱乐</div>
+            <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C7 16.5 3 13.3 3 9.3 3 6.4 5.2 4.5 7.7 4.5c1.7 0 3.3.9 4.3 2.4 1-1.5 2.6-2.4 4.3-2.4 2.5 0 4.7 1.9 4.7 4.8 0 4-4 7.2-9 11.7Z"/></svg></span>
+            <span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></span>
+            <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+          </div>
+          <div class="qm-tabbar">
+            <span class="qm-tab on"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5Z"/></svg></span>首页</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none"/></svg></span>视频</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4h4l5 4V6L8 10Z" fill="currentColor" stroke="none"/><path d="M16.5 9.5a4 4 0 0 1 0 5"/></svg></span>刷歌</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.3l6.1-.7Z"/></svg></span>星光</span>
+            <span class="qm-tab"><span class="tico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.5-3.5 4.2-5 7.5-5s6 1.5 7.5 5"/></svg></span>我的</span>
+          </div>
+        </div>
+
+            <div id="wxChatDemo" hidden>
+              <div class="statusbar" style="background:#ededed;color:#000">
+                <span>9:41</span>
+                <span class="sb-ic">
+                  <svg width="18" height="11" viewBox="0 0 18 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+                  <svg width="16" height="12" viewBox="-2 0 20 12" fill="currentColor"><path d="M8 2.5C11.8 2.5 15.2 4.2 17.3 6.7L16 8.2C14.2 6 11.3 4.7 8 4.7S1.8 6 0 8.2L-1.3 6.7C.8 4.2 4.2 2.5 8 2.5Z"/><path d="M8 5.6c2.2 0 4.2.9 5.6 2.4l-1.3 1.5C11.2 8.4 9.7 7.8 8 7.8s-3.2.6-4.3 1.7L2.4 8C3.8 6.5 5.8 5.6 8 5.6Z"/><circle cx="8" cy="10.3" r="1.2"/></svg>
+                  <svg width="25" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" opacity=".4"/></svg>
+                </span>
+              </div>
+              
+              <div class="chat-header"><button class="back" id="wxBackToCommunity" aria-label="返回音乐表情包社区">‹</button><b>小航</b><span class="more" aria-hidden="true">•••</span></div>
+              <div class="chat-body" id="wxMessages"></div>
+              <div class="chat-input">
+                <span class="wi voice" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h4l5 4V6l-5 4Z"/><path d="M16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14"/></svg></span>
+                <input class="field" aria-label="微信聊天输入框">
+                <button class="wi" id="wxEmojiToggle" aria-label="打开表情面板" aria-expanded="false" aria-controls="wxEmojiPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 14a5 5 0 0 0 9 0"/><path d="M8 8.5h.01M16 8.5h.01"/></svg></button>
+                <span class="wp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg></span>
+              </div>
+              <div class="wx-emoji-panel" id="wxEmojiPanel" hidden>
+                <div class="wx-emoji-tabs" role="tablist" aria-label="表情分类">
+                  <span aria-hidden="true" style="width:30px;padding:3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></svg></span>
+                  <button role="tab" aria-label="默认表情" aria-selected="true" data-wx-category="emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 14a5 5 0 0 0 9 0"/><path d="M8 8.5h.01M16 8.5h.01"/></svg></button>
+                  <button role="tab" aria-label="收藏表情" aria-selected="false" data-wx-category="favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21S2 15 2 8a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 7-10 13-10 13Z"/></svg></button>
+                  <button role="tab" aria-label="合拍表情" aria-selected="false" data-wx-category="hand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 12-3-6 3-1 4 7-1-9h3l2 10 3-4 3 2-3 9c-4 6-12 3-13-2l-1-3 3-1 3 3"/></svg></button>
+                  <button role="tab" aria-label="收藏的音乐表情包" aria-selected="false" data-wx-category="music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17V5l10-2v12M10 8l10-2"/><ellipse cx="6.5" cy="17.5" rx="3.5" ry="2.5"/><ellipse cx="16.5" cy="15.5" rx="3.5" ry="2.5"/></svg></button>
+                </div>
+                <div class="wx-emoji-content" id="wxEmojiContent" role="tabpanel" aria-label="默认表情"></div>
+              </div>
+              <button class="wx-menu-dismiss" aria-label="关闭表情操作菜单" hidden></button>
+              <div class="wx-context-menu" id="wxStickerMenu" role="menu" aria-label="表情操作" hidden><div class="wx-menu-row"><button type="button" class="wx-menu-item" role="menuitem" id="wxAddSticker"><span class="add-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 14a5 5 0 0 0 9 0"/><path d="M8 8.5h.01M16 8.5h.01"/></svg><small>+</small></span><span>添加</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 3 7 7-7 6v-4C7 12 4 15 3 20c-2-10 4-14 11-14Z"/></svg><span>转发</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 14a5 5 0 0 0 9 0"/><path d="M8 8.5h.01M16 8.5h.01"/></svg><span>相关表情</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M9 3h6M6 6l1 15h10l1-15M10 10v7M14 10v7"/></svg><span>删除</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h2M10 5h10M4 11h2M10 11h10M4 17h2M10 17h4m1 2 3 3 5-6"/></svg><span>多选</span></button></div><div class="wx-menu-row"><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 12-3-6 3-1 4 7-1-9h3l2 10 3-4 3 2-3 9c-4 6-12 3-13-2l-1-3 3-1 3 3"/></svg><span>合拍</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5H3v9h5v4H3M21 5h-7v9h5v4h-5"/></svg><span>引用</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14l-2-4V8a5 5 0 0 0-10 0v5ZM10 21h4"/></svg><span>提醒</span></button><button type="button" class="wx-menu-item" role="menuitem" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h4l5 4V6l-5 4Z"/><path d="M16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14"/></svg><span>连续朗读</span></button></div></div>
+              <div class="wx-toast" role="status" id="wxToast" hidden></div>
+            </div>
+      </div>
+    </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ================= Value ================= -->
+<section class="block value" id="value">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">05 / 产品价值</div>
+      <h2>终点不是播放，而是交流</h2>
+      <p>每一次用音乐表达，都是一次音乐传播；接收者喜欢这段音乐，就能回流 QQ 音乐听完整歌曲。</p>
+    </div>
+    <div class="loop-wrap">
+      <span class="loop-node">听音乐</span><span class="loop-arrow">→</span>
+      <span class="loop-node">发现一句话</span><span class="loop-arrow">→</span>
+      <span class="loop-node hl">用音乐表达</span><span class="loop-arrow">→</span>
+      <span class="loop-node">社交传播</span><span class="loop-arrow">→</span>
+      <span class="loop-node">好友试听</span><span class="loop-arrow">→</span>
+      <span class="loop-node">回流完整歌曲</span>
+    </div>
+    <div class="value-grid">
+      <div class="v-card"><div class="ico" aria-hidden="true">01</div><h4>对于用户</h4><p>音乐表达成本大幅降低，歌曲像 Emoji、GIF 一样自然进入聊天。</p></div>
+      <div class="v-card"><div class="ico" aria-hidden="true">02</div><h4>对于 QQ 音乐</h4><p>消费单位从歌曲扩展到歌词句子，音乐以几秒的片段进入海量社交场景。</p></div>
+      <div class="v-card"><div class="ico" aria-hidden="true">03</div><h4>对于音乐人</h4><p>每一次歌词片段传播，都可能成为一首新歌的发现入口。</p></div>
+      <!-- 「对于 AI」卡已删除 -->
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo"><span class="logo-mark">♪</span>QQ音乐 · 音乐语言</div>
+    <div>腾讯音乐黑客松 2026 参赛作品 · Demo 中歌词及原声片段版权归原版权方所有，仅用于演示</div>
+  </div>
+</footer>
+
+<script>
+/* ====================================================
+   Data
+==================================================== */
+const A = 'assets/audio/';
+
+// MVP 歌曲歌词（《明天会更好》）
+const MVP_LYRICS = [
+  '轻轻敲醒沉睡的心灵',
+  '慢慢张开你的眼睛',
+  '看看忙碌的世界是否依然孤独地转个不停',
+  '春风不解风情，吹动少年的心',
+  '日出唤醒清晨，大地光彩重生',
+  '让和风拂出的影像谱成生命的乐章',
+  '唱出你的热情，伸出你双手',
+  '让我拥抱着你的梦',
+  '让我们的笑容充满着青春的骄傲',
+  '为明天献出虔诚的祈祷'
+];
+
+const MVP_SONG = {song:'明天会更好', artist:'华语群星', src:A+'mingtian.m4a'};
+
+// 歌词 → 真实片段音频映射。只有命中的句子才播放真实声音，其余静音仿真。
+const CLIP_MAP = {
+  '轻轻敲醒沉睡的心灵': A+'clip-qingqing.m4a'
+};
+function clipSrc(lyric){ return CLIP_MAP[lyric] || null; }
+
+/* ====================================================
+   Screen navigation
+==================================================== */
+const screens = document.querySelectorAll('.screen');
+const tabs = document.querySelectorAll('#demo .step-tab');
+let curScreen = 0;
+
+function go(n){
+  curScreen = n;
+  screens.forEach((s,i)=>s.classList.toggle('on', i===n));
+  tabs.forEach((t,i)=>t.classList.toggle('on', i===n));
+  // 离开播放页时暂停整首歌，避免后台播放
+  if(typeof fullAudio !== 'undefined' && n !== 0){ fullAudio.pause(); }
+}
+tabs.forEach(t=>t.addEventListener('click',()=>go(+t.dataset.go)));
+document.querySelectorAll('[data-go]').forEach(el=>{
+  el.addEventListener('click',()=>go(+el.dataset.go));
+});
+document.querySelectorAll('[data-back]').forEach(el=>{
+  el.addEventListener('click',()=>go(+el.dataset.back));
+});
+// 第 4 步「回流完整歌曲」：回到播放页并自动播放完整歌曲
+document.getElementById('tabLoop').addEventListener('click', ()=>reopenFullSong());
+
+/* ====================================================
+   Audio engine — real audio with simulated fallback
+==================================================== */
+const Engine = {
+  audio:null, timer:null, active:null,
+
+  stop(){
+    if(this.audio){ this.audio.pause(); this.audio = null; }
+    if(this.timer){ clearInterval(this.timer); this.timer = null; }
+    if(this.active){ this.active.onStop(); this.active = null; }
+  },
+
+  // opts: {src, duration, loop, onProgress(p,timeText), onStop, onEnd}
+  play(opts){
+    this.stop();
+    this.active = opts;
+    const dur = opts.duration;
+    let real = false, t0 = Date.now();
+
+    const simTick = ()=>{
+      const t = (Date.now()-t0)/1000;
+      if(t >= dur){
+        if(opts.loop){ t0 = Date.now(); opts.onProgress && opts.onProgress(0, fmt(0)); }
+        else { opts.onProgress && opts.onProgress(1, fmt(dur)); opts.onEnd && opts.onEnd(); this.stop(); }
+        return;
+      }
+      opts.onProgress && opts.onProgress(t/dur, fmt(t));
+    };
+
+    const startSim = ()=>{
+      this.timer = setInterval(simTick, 100);
+      opts.onProgress && opts.onProgress(0, fmt(0));
+    };
+
+    // 没有提供真实音频源 → 直接静音仿真（不发请求、不出错）
+    if(!opts.src){ startSim(); return; }
+
+    const a = new Audio();
+    this.audio = a;
+    a.preload = 'auto';
+    a.addEventListener('error', ()=>{ /* will fall through play() rejection */ });
+    a.src = opts.src;
+    a.play().then(()=>{
+      real = true;
+      a.addEventListener('timeupdate', ()=>{
+        const t = a.currentTime;
+        if(t >= dur){
+          if(opts.loop){ a.currentTime = 0; }
+          else { opts.onProgress && opts.onProgress(1, fmt(dur)); opts.onEnd && opts.onEnd(); this.stop(); }
+          return;
+        }
+        opts.onProgress && opts.onProgress(t/dur, fmt(t));
+      });
+    }).catch(()=>{
+      // missing file / autoplay policy / decode error → simulate
+      this.audio = null;
+      startSim();
+    });
+  },
+
+  toggle(opts){
+    if(this.active && this.active._id === opts._id){ this.stop(); return false; }
+    this.play(opts);
+    return true;
+  }
+};
+function fmt(t){ t=Math.max(0,Math.floor(t)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); }
+let uid = 0;
+
+/* ====================================================
+   S1 — Player: lyric list + long press
+==================================================== */
+const lyricList = document.getElementById('lyricList');
+let activeLyric = 0;
+
+// 每句歌词对应的歌手（与 MVP_LYRICS 一一对应）
+const LYRIC_SINGERS = ['蔡琴','蔡琴','余天','苏芮','苏芮','苏芮','蔡琴','蔡琴','余天','余天'];
+let lastSinger = '';
+MVP_LYRICS.forEach((ly,i)=>{
+  const singer = LYRIC_SINGERS[i];
+  if(singer && singer !== lastSinger){
+    const sg = document.createElement('div');
+    sg.className = 'lyric-line singer';
+    sg.textContent = singer + '：';
+    lyricList.appendChild(sg);
+    lastSinger = singer;
+  }
+  const el = document.createElement('div');
+  el.className = 'lyric-line'+(i===0?' act':'');
+  el.textContent = ly;
+  el.dataset.i = i;
+  lyricList.appendChild(el);
+});
+const LYRIC_STEP = lyricList.children[0].offsetHeight || 44;
+function positionLyrics(){
+  const act = lyricList.querySelector('.lyric-line.act');
+  if(act){
+    const center = act.offsetTop + act.offsetHeight/2;
+    lyricList.style.transform = 'translateY('+(-center)+'px)';
+  }
+}
+positionLyrics();
+
+let pressTimer = null, pressedEl = null;
+function pressStart(el){
+  pressedEl = el;
+  pressTimer = setTimeout(()=>{
+    el.classList.add('pressing');
+    if(navigator.vibrate) navigator.vibrate(30);
+    openSheet(el);
+  }, 480);
+}
+function pressCancel(){
+  clearTimeout(pressTimer);
+  if(pressedEl) pressedEl.classList.remove('pressing');
+  pressedEl = null;
+}
+lyricList.addEventListener('mousedown', e=>{ const l = e.target.closest('.lyric-line'); if(l && l.dataset.i!==undefined) pressStart(l); });
+lyricList.addEventListener('touchstart', e=>{ const l = e.target.closest('.lyric-line'); if(l && l.dataset.i!==undefined) pressStart(l); }, {passive:true});
+window.addEventListener('mouseup', pressCancel);
+window.addEventListener('touchend', pressCancel);
+lyricList.addEventListener('touchmove', pressCancel, {passive:true});
+
+// tap lyric = switch active line (normal player behavior)
+lyricList.addEventListener('click', e=>{
+  const l = e.target.closest('.lyric-line');
+  if(!l || l.dataset.i===undefined) return;
+  activeLyric = +l.dataset.i;
+  document.querySelectorAll('.lyric-line').forEach(x=>x.classList.toggle('act', x.dataset.i===String(activeLyric)));
+  positionLyrics();
+});
+
+// long-press popover (QQ music style)
+const popMask = document.getElementById('popMask');
+const popMenu = document.getElementById('popMenu');
+let chosenLyric = MVP_LYRICS[0];
+function openSheet(el){
+  chosenLyric = MVP_LYRICS[+el.dataset.i];
+  popMask.classList.add('on');
+  popMenu.classList.add('on');
+  const scr = document.getElementById('scr0');
+  const sr = scr.getBoundingClientRect(), lr = el.getBoundingClientRect();
+  const mw = popMenu.offsetWidth, mh = popMenu.offsetHeight;
+  let top = lr.top - sr.top - mh - 10;
+  if(top < 8){ top = lr.bottom - sr.top + 10; }
+  let left = lr.left - sr.left + lr.width/2 - mw/2;
+  left = Math.max(8, Math.min(left, sr.width - mw - 8));
+  popMenu.style.top = top+'px';
+  popMenu.style.left = left+'px';
+}
+function closeSheet(){ popMask.classList.remove('on'); popMenu.classList.remove('on'); pressCancel(); }
+popMask.addEventListener('click', closeSheet);
+document.getElementById('popShare').addEventListener('click', ()=>{
+  document.getElementById('cfLyric').textContent = chosenLyric;
+  closeSheet();
+  go(1);
+});
+
+// 完整歌曲播放控制
+const mainPlay = document.getElementById('mainPlay');
+let fullAudio = null;
+let playing = false;
+const ICON_PAUSE_MAIN = '<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>';
+const ICON_PLAY_MAIN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>';
+
+function syncPlayIcon(){ mainPlay.innerHTML = playing ? ICON_PAUSE_MAIN : ICON_PLAY_MAIN; }
+
+// （重新）创建音频元素并绑定事件，避免出错后无法重启
+function makeFullAudio(){
+  if(fullAudio){ try{ fullAudio.pause(); }catch(e){} }
+  const a = new Audio(MVP_SONG.src);
+  a.preload = 'auto';
+  a.addEventListener('play', ()=>{ playing = true; syncPlayIcon(); });
+  a.addEventListener('pause', ()=>{ playing = false; syncPlayIcon(); });
+  a.addEventListener('ended', ()=>{ playing = false; syncPlayIcon(); });
+  a.addEventListener('error', ()=>{ playing = false; syncPlayIcon(); });
+  fullAudio = a;
+  return a;
+}
+makeFullAudio();
+syncPlayIcon();
+
+mainPlay.addEventListener('click', ()=>{
+  let a = fullAudio;
+  if(!a || a.error){ a = makeFullAudio(); }
+  if(a.paused || a.ended){
+    if(a.ended){ try{ a.currentTime = 0; }catch(e){} }
+    // 缓冲不足（加载曾被中断）→ 强制重新加载，避免播一半就停
+    if(a.readyState < 2){ try{ a.load(); }catch(e){} }
+    a.play().then(()=>{})
+      .catch(()=>{
+        // 播放失败 → 重建音频元素再试一次
+        const b = makeFullAudio();
+        b.play().then(()=>{}).catch(()=>{ playing = false; syncPlayIcon(); });
+      });
+  } else {
+    a.pause();
+  }
+});
+
+// 聊天回流：回到播放页并自动播放完整歌曲
+function reopenFullSong(){
+  let a = fullAudio;
+  if(!a || a.error){ a = makeFullAudio(); }
+  if(a.paused || a.ended){
+    if(a.ended){ try{ a.currentTime = 0; }catch(e){} }
+    if(a.readyState < 2){ try{ a.load(); }catch(e){} }
+    a.play().catch(()=>{
+      const b = makeFullAudio();
+      b.play().catch(()=>{ playing = false; syncPlayIcon(); });
+    });
+  }
+}
+
+/* ====================================================
+   S2 — Confirm: duration, waveform, sticker
+==================================================== */
+let cfDuration = 8;
+let stickerOn = false, lyricOn = true, stickerBg = 'assets/img/stk-dog.png';
+
+document.querySelectorAll('.dur-pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    Engine.stop();
+    document.querySelectorAll('.dur-pill').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+    cfDuration = +p.dataset.dur;
+    const lbl = document.getElementById('cfDurLabel');
+    if(lbl) lbl.textContent = cfDuration+' 秒';
+    const pill2 = document.getElementById('cfDurPill');
+    if(pill2) pill2.textContent = '原声 '+cfDuration+'s';
+  });
+});
+
+// build waveform bars
+// 预览卡播放按钮：播放本句原声
+const cfPreviewPlay = document.getElementById('cfPreviewPlay');
+const PP_PLAY = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15L20 12Z"/></svg>';
+const PP_PAUSE = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>';
+function cfOpts(){
+  const ly = document.getElementById('cfLyric').textContent;
+  return {
+    _id:'cf', src:clipSrc(ly), duration:cfDuration,
+    onStop:()=>{ cfPreviewPlay.classList.remove('playing'); cfPreviewPlay.innerHTML = PP_PLAY; }
+  };
+}
+cfPreviewPlay.addEventListener('click', ()=>{
+  const on = Engine.toggle(cfOpts());
+  cfPreviewPlay.classList.toggle('playing', on);
+  cfPreviewPlay.innerHTML = on ? PP_PAUSE : PP_PLAY;
+});
+
+// 歌词显示状态同步：预览卡歌词 + 表情包歌词
+function applyLyricVisibility(){
+  const ly = document.querySelector('.cf-preview .ly');
+  if(ly) ly.style.visibility = (stickerOn && !lyricOn) ? 'hidden' : 'visible';
+}
+
+// 把选中的贴纸背景应用到预览卡
+function applyStickerPreview(){
+  document.getElementById('lyricToggleOption').hidden = !stickerOn;
+  const prev = document.querySelector('.cf-preview');
+  if(stickerOn && stickerBg){
+    prev.classList.add('stk-active');
+    prev.style.backgroundImage = `url(${stickerBg})`;
+  } else {
+    prev.classList.remove('stk-active');
+    prev.style.backgroundImage = '';
+  }
+  applyLyricVisibility();
+}
+
+// sticker switch
+document.getElementById('stickerSwitch').addEventListener('click', ()=>{
+  stickerOn = !stickerOn;
+  document.getElementById('stickerSwitch').classList.toggle('on', stickerOn);
+  document.getElementById('stickerPanel').classList.toggle('on', stickerOn);
+  applyStickerPreview();
+  if(stickerOn){
+    setTimeout(()=>{ const b = document.querySelector('#scr1 .confirm-body'); if(b) b.scrollTop = b.scrollHeight; }, 60);
+  }
+});
+// 歌词显示开关
+document.getElementById('lyricSwitch').addEventListener('click', ()=>{
+  lyricOn = !lyricOn;
+  document.getElementById('lyricSwitch').classList.toggle('on', lyricOn);
+  applyLyricVisibility();
+});
+document.querySelectorAll('.sticker-bg').forEach(bg=>{
+  bg.addEventListener('click', ()=>{
+    if(bg.dataset.bg === 'upload'){
+      document.getElementById('stickerUpload').click();
+      return;
+    }
+    document.querySelectorAll('.sticker-bg').forEach(x=>x.classList.remove('on'));
+    bg.classList.add('on');
+    stickerBg = bg.dataset.bg;
+    applyStickerPreview();
+  });
+});
+// 本地上传 / 拍照作为自定义贴纸背景
+document.getElementById('stickerUpload').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    stickerBg = reader.result;
+    const sbg3 = document.querySelector('.sticker-bg.sbg3');
+    sbg3.style.backgroundImage = `url(${stickerBg})`;
+    sbg3.style.backgroundSize = 'cover';
+    sbg3.querySelector('.up-ic').style.display = 'none';
+    document.querySelectorAll('.sticker-bg').forEach(x=>x.classList.remove('on'));
+    sbg3.classList.add('on');
+    applyStickerPreview();
+  };
+  reader.readAsDataURL(file);
+});
+
+// share → chat
+document.getElementById('cfShare').addEventListener('click', ()=>{
+  const ly = document.getElementById('cfLyric').textContent;
+  shareToChat({
+    ly, song:MVP_SONG.song, artist:MVP_SONG.artist,
+    dur:cfDuration, src:clipSrc(ly),
+    sticker:stickerOn ? stickerBg : null,
+    showLyric: lyricOn
+  });
+});
+
+/* ====================================================
+   S3 — Chat: dynamic music card
+==================================================== */
+const chatBody = document.getElementById('chatBody');
+const friendReply = document.getElementById('friendReply');
+let lastCardEl = null;
+
+const NOTE_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 19a3.5 3.5 0 1 1-3.5-3.5A3.5 3.5 0 0 1 9 19Z"/><path d="M12.2 5.2v10.4l-2.2.8V6.6c0-1.2.9-2 2.2-1.4Z"/><path d="M12.2 5.2c2.8.7 4.5 2.2 5 4.5-2.2-.5-3.8.2-5 1.6Z"/></svg>';
+const XS_TRI = '<svg width="9" height="10" viewBox="0 0 12 12" fill="currentColor"><path d="M2.5 1.2v9.6L11 6Z"/></svg>';
+const XS_PAUSE = '<svg width="8" height="10" viewBox="0 0 12 12" fill="currentColor"><rect x="1.6" y="1" width="3.2" height="10" rx=".7"/><rect x="7.2" y="1" width="3.2" height="10" rx=".7"/></svg>';
+
+function shareToChat(data){
+  // remove previous dynamic card
+  if(lastCardEl){ lastCardEl.remove(); lastCardEl = null; }
+  friendReply.style.display = 'none';
+
+  const msg = document.createElement('div');
+  msg.className = 'msg me';
+  let card, prog, playBtn = null;
+
+  if(data.sticker){
+    msg.innerHTML = `
+      <div class="avatar m">我</div>
+      <div class="xsticker">
+        <div class="xs-img">
+          <span class="xs-ly"></span>
+          <span class="xs-prog"><i></i></span>
+        </div>
+        <div class="xs-foot">
+          <span class="xs-full qq-mark">${NOTE_ICON}</span>
+          <span class="xs-full xf-name">QQ音乐</span>
+          <span class="xs-play">${XS_TRI}</span>
+        </div>
+      </div>`;
+    const xsImg = msg.querySelector('.xs-img');
+    xsImg.style.backgroundImage = `url(${data.sticker})`;
+    xsImg.style.backgroundSize = 'cover';
+    xsImg.style.backgroundPosition = 'center';
+    msg.querySelector('.xs-ly').textContent = data.ly;
+    if(data.showLyric === false){ msg.querySelector('.xs-ly').style.display = 'none'; }
+    card = msg.querySelector('.xsticker');
+    prog = card.querySelector('.xs-prog i');
+    playBtn = card.querySelector('.xs-play');
+  } else {
+    msg.innerHTML = `
+      <div class="avatar m">我</div>
+      <div class="ly-share">
+        <div class="ly-bubble"></div>
+        <div class="ly-src">
+          <span class="qq-mark qm-open">${NOTE_ICON}</span>
+          <span class="qm-open xf-name">QQ音乐</span>
+          <span class="ly-play">${XS_TRI}</span>
+        </div>
+      </div>`;
+    msg.querySelector('.ly-bubble').textContent = data.ly;
+    card = msg.querySelector('.ly-share');
+    playBtn = card.querySelector('.ly-play');
+  }
+
+  // insert before friend reply
+  chatBody.insertBefore(msg, friendReply);
+  lastCardEl = msg;
+  chatBody.scrollTop = chatBody.scrollHeight;
+  go(2);
+
+  const cardId = 'chat-'+(++uid);
+  function toggleClip(){
+    const on = Engine.toggle({
+      _id:cardId, src:data.src, duration:data.dur, loop:true,
+      onProgress:(p)=>{ if(prog) prog.style.width = (p*100)+'%'; },
+      onStop:()=>{ card.classList.remove('playing'); if(prog) prog.style.width='0'; if(playBtn) playBtn.innerHTML=XS_TRI; }
+    });
+    card.classList.toggle('playing', on);
+    if(playBtn) playBtn.innerHTML = on ? XS_PAUSE : XS_TRI;
+    if(on){
+      friendReply.style.display = 'flex';
+      setTimeout(()=>chatBody.scrollTop = chatBody.scrollHeight, 400);
+    }
+  }
+  function openFullSong(){ Engine.stop(); go(0); reopenFullSong(); }
+
+  if(data.sticker){
+    playBtn.addEventListener('click', e=>{ e.stopPropagation(); toggleClip(); });
+    card.querySelector('.xs-img').addEventListener('click', toggleClip);
+    card.querySelectorAll('.xs-full').forEach(el=>el.addEventListener('click', e=>{
+      e.stopPropagation(); openFullSong();
+    }));
+  } else {
+    playBtn.addEventListener('click', e=>{ e.stopPropagation(); toggleClip(); });
+    card.querySelectorAll('.qm-open').forEach(el=>el.addEventListener('click', e=>{
+      e.stopPropagation(); openFullSong();
+    }));
+  }
+}
+
+/* ===== 音乐表情包社区：首页入口 ↔ 社区页 ===== */
+const commHome = document.getElementById('commHome');
+const commPage = document.getElementById('commPage');
+document.getElementById('commEntry').addEventListener('click', ()=>{
+  Engine.stop();
+  commHome.classList.remove('on');
+  commPage.classList.add('on');
+  commPage.scrollTop = 0;
+});
+document.getElementById('commBack').addEventListener('click', ()=>{
+  commPage.classList.remove('on');
+  commHome.classList.add('on');
+});
+document.querySelectorAll('#community .qm-ftab').forEach(t=>t.addEventListener('click', ()=>{
+  document.querySelectorAll('#community .qm-ftab').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+}));
+/* 社区表情包：点击时长角标试听对应歌曲片段 */
+let commAudio = null, commDur = null;
+function commStop(){
+  if(commAudio){ commAudio.pause(); }
+  if(commDur){ commDur.classList.remove('playing'); }
+  commAudio = null; commDur = null;
+}
+document.querySelectorAll('#community .qm-card[data-audio]').forEach(card=>{
+  const dur = card.querySelector('.dur');
+  const src = card.dataset.audio;
+  function toggle(){
+    if(commAudio && commDur === dur){
+      if(commAudio.paused){ commAudio.play().catch(()=>{}); dur.classList.add('playing'); }
+      else { commAudio.pause(); dur.classList.remove('playing'); }
+      return;
+    }
+    commStop();
+    commAudio = new Audio(src);
+    commDur = dur;
+    if(commAudio.readyState < 2){ commAudio.load(); }
+    commAudio.play().then(()=>dur.classList.add('playing')).catch(()=>{ commStop(); });
+  }
+  dur.addEventListener('click', e=>{ e.stopPropagation(); toggle(); });
+  card.addEventListener('click', e=>{
+    if(e.target.closest('.use') || e.target.closest('.loveb')) return;
+    toggle();
+  });
+});
+commPage.addEventListener('click', e=>{
+  if(commAudio && !e.target.closest('.qm-card') && !commAudio.paused){ commStop(); }
+}, true);
+
+/* WeChat: long press → save → music sticker drawer → reuse */
+(() => {
+  const chat = document.getElementById('wxChatDemo');
+  const menu = document.getElementById('wxStickerMenu');
+  const dismiss = chat.querySelector('.wx-menu-dismiss');
+  const add = document.getElementById('wxAddSticker');
+  const panel = document.getElementById('wxEmojiPanel');
+  const toggle = document.getElementById('wxEmojiToggle');
+  const content = document.getElementById('wxEmojiContent');
+  const messages = document.getElementById('wxMessages');
+  const toast = document.getElementById('wxToast');
+  const storageKey = 'qqmusic-demo-saved-stickers-v2';
+  const likeKey = 'qqmusic-demo-liked-stickers';
+  const registry = new Map();
+  const likeUpdaters = new Map();
+  let demoActive = false;
+  let saved = new Set(), liked = new Set(), category = 'emoji', activeImage = null, activeSticker = null, toastTimer;
+  try {
+    saved = new Set(JSON.parse(localStorage.getItem(storageKey) || '[]'));
+    liked = new Set(JSON.parse(localStorage.getItem(likeKey) || '[]'));
+    if (localStorage.getItem('qqmusic-demo-qingqing-sticker-saved') === 'true') saved.add('assets/audio/clip-qingqing.m4a');
+  } catch (_) {}
+  function persist(key, values) {
+    if (demoActive) return;
+    try { localStorage.setItem(key, JSON.stringify([...values])); } catch (_) {}
+  }
+  const stepButtons = document.querySelectorAll('[data-community-step]');
+  let communityStep = 0, lastUsedSticker = null;
+  function setCommunityStep(n) {
+    communityStep = n;
+    stepButtons.forEach(button => {
+      const current = Number(button.dataset.communityStep) === n;
+      button.classList.toggle('on', current);
+      if (current) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+    });
+  }
+  function showCommunity(step = 0) {
+    Engine.stop(); commStop(); closeMenu();
+    chat.hidden = true;
+    commHome.classList.remove('on');
+    commPage.classList.add('on');
+    setCommunityStep(step);
+  }
+  document.getElementById('wxBackToCommunity').addEventListener('click', () => showCommunity());
+  document.getElementById('commEntry').addEventListener('click', () => setCommunityStep(0));
+  document.getElementById('commBack').addEventListener('click', () => setCommunityStep(0));
+  document.querySelectorAll('#community .qm-card[data-audio]').forEach(card => {
+    const data = {
+      id: card.dataset.audio, src:card.dataset.audio,
+      image:card.querySelector('.imgwrap img').getAttribute('src'),
+      lyric:card.querySelector('.tt b').textContent,
+      duration:parseFloat(card.querySelector('.dur').textContent) || 8
+    };
+    registry.set(data.id, data);
+    const oldLike = card.querySelector('.loveb');
+    const like = document.createElement('button');
+    like.type = 'button'; like.className = 'loveb';
+    like.innerHTML = oldLike.innerHTML;
+    const baseLabel = oldLike.textContent;
+    oldLike.replaceWith(like);
+    function updateLike() {
+      const on = liked.has(data.id);
+      like.setAttribute('aria-pressed', String(on));
+      like.setAttribute('aria-label', (on ? '取消点赞：' : '点赞：') + data.lyric);
+      like.lastChild.textContent = baseLabel + (on ? ' +1' : '');
+    }
+    likeUpdaters.set(data.id, updateLike);
+    updateLike();
+    like.addEventListener('click', () => {
+      setCommunityStep(1);
+      if (liked.has(data.id)) liked.delete(data.id); else liked.add(data.id);
+      persist(likeKey, liked); updateLike();
+    });
+    const oldUse = card.querySelector('.use');
+    const use = document.createElement('button');
+    use.type = 'button'; use.className = 'use'; use.textContent = '使用';
+    use.setAttribute('aria-label', '使用音乐表情包：' + data.lyric);
+    oldUse.replaceWith(use);
+    use.addEventListener('click', () => showChat(data));
+  });
+  function showChat(data) {
+      Engine.stop(); commStop();
+      if (fullAudio) fullAudio.pause();
+      closeMenu(); toast.hidden = true; clearTimeout(toastTimer);
+      panel.hidden = true; category = 'emoji';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', '打开表情面板');
+      toggle.innerHTML = WX_SMILE_ICON;
+      chat.querySelector('input').value = '';
+      messages.replaceChildren();
+      commHome.classList.remove('on'); commPage.classList.remove('on');
+      chat.hidden = false;
+      sendSticker(data);
+    lastUsedSticker = data;
+    setCommunityStep(2);
+  }
+  function notify(text) {
+    clearTimeout(toastTimer);
+    toast.textContent = text;
+    toast.hidden = false;
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 1800);
+  }
+  function closeMenu(restoreFocus = false) {
+    menu.hidden = dismiss.hidden = true;
+    if (activeImage) {
+      activeImage.classList.remove('pressed');
+      if (restoreFocus) activeImage.focus({preventScroll:true});
+    }
+  }
+  function openMenu(image, data) {
+    closeMenu();
+    activeImage = image;
+    activeSticker = data;
+    setCommunityStep(3);
+    image.classList.add('pressed');
+    add.querySelector('span:last-child').textContent = saved.has(data.id) ? '已添加' : '添加';
+    menu.hidden = dismiss.hidden = false;
+    const root = chat.getBoundingClientRect(), rect = image.getBoundingClientRect();
+    const above = rect.top - root.top - menu.offsetHeight - 10;
+    const below = above < 50;
+    menu.classList.toggle('below', below);
+    const top = below ? rect.bottom - root.top + 10 : above;
+    menu.style.top = Math.max(50, Math.min(top, chat.clientHeight - menu.offsetHeight - 12)) + 'px';
+    add.focus({preventScroll:true});
+  }
+  dismiss.addEventListener('click', () => closeMenu(true));
+  chat.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(true); });
+  messages.addEventListener('scroll', () => closeMenu(), {passive:true});
+  add.addEventListener('click', () => {
+    if (!activeSticker) return;
+    const alreadySaved = saved.has(activeSticker.id);
+    saved.add(activeSticker.id);
+    persist(storageKey, saved);
+    closeMenu(true);
+    if (!panel.hidden) renderCategory();
+    notify(alreadySaved ? '已在音乐表情包中' : '已添加到音乐表情包');
+    if (!demoActive) openMusicCollection();
+  });
+  function bindSticker(card, data) {
+    const image = card.querySelector('.wx-sticker-image');
+    const play = card.querySelector('.xs-play');
+    let timer, startX, startY;
+    function cancelPress() { clearTimeout(timer); timer = null; }
+    image.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      cancelPress(); startX = e.clientX; startY = e.clientY;
+      timer = setTimeout(() => { timer = null; openMenu(image, data); }, 550);
+    });
+    image.addEventListener('pointermove', e => {
+      if (Math.hypot(e.clientX-startX, e.clientY-startY) > 10) cancelPress();
+    });
+    ['pointerup','pointercancel','pointerleave','lostpointercapture'].forEach(name => image.addEventListener(name, cancelPress));
+    image.addEventListener('contextmenu', e => { e.preventDefault(); cancelPress(); openMenu(image, data); });
+    image.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ' || (e.shiftKey && e.key === 'F10')) {
+        e.preventDefault(); openMenu(image, data);
+      }
+    });
+    const id = 'wx-sticker-' + (++uid);
+    play.addEventListener('click', () => {
+      commStop();
+      if (fullAudio) fullAudio.pause();
+      const on = Engine.toggle({
+        _id:id, src:data.src, duration:data.duration,
+        onStop:() => { card.classList.remove('playing'); play.textContent = '▶'; play.setAttribute('aria-label','播放音乐表情包原声'); }
+      });
+      card.classList.toggle('playing', on);
+      play.textContent = on ? 'Ⅱ' : '▶';
+      play.setAttribute('aria-label', on ? '暂停音乐表情包原声' : '播放音乐表情包原声');
+    });
+  }
+  function sendSticker(data) {
+    const row = document.createElement('div');
+    row.className = 'msg me';
+    row.innerHTML = '<div class="avatar m">我</div><div class="xsticker"><button class="wx-sticker-image" aria-haspopup="menu"><img draggable="false"></button><div class="xs-foot"><span class="qq-mark">♪</span><span class="xf-name">QQ音乐</span><button class="xs-play" aria-label="播放音乐表情包原声">▶</button></div></div>';
+    const card = row.querySelector('.xsticker');
+    const image = card.querySelector('img');
+    image.src = data.image; image.alt = data.lyric;
+    card.dataset.stickerId = data.id;
+    card.querySelector('.wx-sticker-image').setAttribute('aria-label', data.lyric + '，长按添加表情');
+    messages.appendChild(row);
+    bindSticker(card, data);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  function renderCategory() {
+    chat.querySelectorAll('[data-wx-category]').forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.wxCategory === category)));
+    content.replaceChildren();
+    const title = document.createElement('h4');
+    title.textContent = category === 'music' ? '音乐表情包' : category === 'favorite' ? '收藏表情' : category === 'hand' ? '合拍表情' : '最近使用';
+    content.setAttribute('aria-label', title.textContent);
+    content.appendChild(title);
+    const collection = [...saved].map(id => registry.get(id)).filter(Boolean);
+    if (category === 'music' && collection.length) {
+      const grid = document.createElement('div');
+      grid.className = 'wx-saved-grid';
+      for (const data of collection) {
+        const sticker = document.createElement('button');
+        sticker.className = 'wx-saved-sticker';
+        sticker.setAttribute('aria-label', '发送收藏的' + data.lyric + '音乐表情包');
+        const image = document.createElement('img');
+        image.src = data.image; image.alt = data.lyric;
+        const label = document.createElement('span'); label.textContent = data.lyric;
+        sticker.append(image, label);
+        sticker.addEventListener('click', () => sendSticker(data));
+        grid.appendChild(sticker);
+      }
+      content.appendChild(grid);
+    } else if (category === 'emoji') {
+      const grid = document.createElement('div');
+      grid.className = 'wx-emoji-grid';
+      for (const emoji of ['😊','😁','❤️','👋','👍','😂','😭','🙂','🥺','😍','😳','😎','😴','🤐','😌','😆','😰','😡','😉','🤭','😮']) {
+        const button = document.createElement('button');
+        button.textContent = emoji;
+        button.addEventListener('click', () => { chat.querySelector('input').value += emoji; });
+        grid.appendChild(button);
+      }
+      content.appendChild(grid);
+    } else {
+      const empty = document.createElement('p');
+      empty.className = 'wx-empty';
+      empty.textContent = category === 'music' ? '还没有收藏音乐表情包。长按聊天中的表情包，点击「添加」。' : '暂无表情';
+      content.appendChild(empty);
+    }
+  }
+  toggle.addEventListener('click', () => {
+    closeMenu();
+    setCommunityStep(3);
+    panel.hidden = !panel.hidden;
+    toggle.setAttribute('aria-expanded', String(!panel.hidden));
+    toggle.setAttribute('aria-label', panel.hidden ? '打开表情面板' : '关闭表情面板');
+    toggle.innerHTML = panel.hidden ? WX_SMILE_ICON : WX_KEYBOARD_ICON;
+    if (!panel.hidden) {
+      renderCategory();
+      messages.scrollTop = messages.scrollHeight;
+    }
+  });
+  const WX_SMILE_ICON = toggle.innerHTML;
+  const WX_KEYBOARD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h1m3 0h1m3 0h1m3 0h1M6 12h1m3 0h1m3 0h1m3 0h1M7 16h10"/></svg>';
+  chat.querySelectorAll('[data-wx-category]').forEach(tab => tab.addEventListener('click', () => {
+    category = tab.dataset.wxCategory;
+    renderCategory();
+  }));
+  chat.querySelector('input').addEventListener('focus', () => {
+    panel.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', '打开表情面板');
+    toggle.innerHTML = WX_SMILE_ICON;
+  });
+  function openMusicCollection() {
+    closeMenu();
+    category = 'music'; panel.hidden = false;
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', '关闭表情面板');
+    toggle.innerHTML = WX_KEYBOARD_ICON;
+    renderCategory();
+    messages.scrollTop = messages.scrollHeight;
+    setCommunityStep(3);
+  }
+  commPage.addEventListener('click', e => {
+    if (e.target.closest('.qm-card .dur')) setCommunityStep(1);
+  });
+  stepButtons.forEach(button => button.addEventListener('click', () => {
+    const step = Number(button.dataset.communityStep);
+    if (step <= 1) {
+      showCommunity(step);
+      const body = commPage.querySelector('.qm-body');
+      if (step === 0) body.scrollTop = 0;
+      else {
+        const grid = commPage.querySelector('.qm-grid');
+        body.scrollTop += grid.getBoundingClientRect().top - body.getBoundingClientRect().top - 8;
+      }
+    } else {
+      const data = lastUsedSticker || registry.get('assets/audio/clip-qingqing.m4a') || registry.values().next().value;
+      if (step === 2 || chat.hidden || !messages.querySelector('.xsticker')) showChat(data);
+      Engine.stop(); commStop();
+      if (step === 3) {
+        if (saved.has(data.id)) openMusicCollection();
+        else {
+          const image = messages.querySelector('.msg:last-child .wx-sticker-image');
+          const id = image.closest('.xsticker').dataset.stickerId;
+          openMenu(image, registry.get(id));
+        }
+      }
+    }
+  }));
+
+  /* Automated walkthrough uses the same buttons and actions as manual use. */
+  const stage = document.getElementById('communityAutoStage');
+  const phone = document.getElementById('wxCollectionPhone');
+  const phoneScreen = phone.querySelector('.phone-screen');
+  const cursor = document.getElementById('communityDemoPointer');
+  const cursorLabel = document.getElementById('communityPointerLabel');
+  const playDemo = document.getElementById('communityDemoPlay');
+  const replayDemo = document.getElementById('communityDemoReplay');
+  const stopDemo = document.getElementById('communityDemoStop');
+  const status = document.getElementById('communityDemoStatus');
+  let demoToken = 0, paused = false, cursorX = 30, cursorY = 90;
+  let originalSaved = null, originalLiked = null;
+  let resumeAudio = [];
+  function describe(text) { status.textContent = text; }
+  function paintCursor() { cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`; }
+  function restoreOriginal() {
+    if (originalSaved) saved = new Set(originalSaved);
+    if (originalLiked) liked = new Set(originalLiked);
+    likeUpdaters.forEach(update => update());
+    if (!panel.hidden) renderCategory();
+  }
+  function resetPresentation() {
+    cursor.hidden = true;
+    cursor.classList.remove('clicking', 'holding');
+    cursorLabel.textContent = '';
+    stage.classList.remove('demo-running', 'demo-paused');
+    stage.querySelectorAll('.demo-target').forEach(el => el.classList.remove('demo-target'));
+    playDemo.textContent = '▶ 播放 Demo';
+    stopDemo.hidden = true;
+  }
+  function stopWalkthrough(text = '演示已结束，可以继续手动体验') {
+    ++demoToken; demoActive = false; paused = false;
+    Engine.stop(); commStop(); resumeAudio = [];
+    restoreOriginal(); originalSaved = originalLiked = null;
+    closeMenu(); resetPresentation();
+    stage.dataset.demoState = 'stopped';
+    describe(text);
+  }
+  function animate(duration, update, token) {
+    return new Promise((resolve, reject) => {
+      let elapsed = 0, previous = performance.now();
+      function frame(now) {
+        if (token !== demoToken) { reject(new DOMException('Walkthrough cancelled', 'AbortError')); return; }
+        const dt = Math.min(now - previous, 60); previous = now;
+        if (!paused && !document.hidden) {
+          elapsed += dt;
+          update && update(Math.min(elapsed / duration, 1));
+        }
+        if (elapsed >= duration) resolve(); else requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+  function wait(ms, token) { return animate(ms, null, token); }
+  async function moveTo(el, label, token) {
+    if (!el) throw new Error('Demo target missing');
+    cursorLabel.textContent = label;
+    const fromX = cursorX, fromY = cursorY;
+    await animate(650, progress => {
+      const root = phoneScreen.getBoundingClientRect(), target = el.getBoundingClientRect();
+      const x = Math.max(10, Math.min(target.left + target.width / 2 - root.left, root.width - 25));
+      const y = Math.max(50, Math.min(target.top + target.height / 2 - root.top, root.height - 25));
+      const eased = progress * progress * (3 - 2 * progress);
+      cursorX = fromX + (x - fromX) * eased;
+      cursorY = fromY + (y - fromY) * eased;
+      paintCursor();
+    }, token);
+    stage.querySelectorAll('.demo-target').forEach(node => node.classList.remove('demo-target'));
+    el.classList.add('demo-target');
+    await wait(250, token);
+  }
+  async function clickTarget(el, label, token, action) {
+    await moveTo(el, label, token);
+    cursor.classList.add('clicking');
+    (action || (() => el.click()))();
+    await wait(500, token);
+    cursor.classList.remove('clicking');
+    el.classList.remove('demo-target');
+  }
+  async function scrollBody(body, to, token) {
+    const from = body.scrollTop;
+    to = Math.max(0, Math.min(to, body.scrollHeight - body.clientHeight));
+    await animate(1000, p => { body.scrollTop = from + (to - from) * (p * p * (3 - 2 * p)); }, token);
+  }
+  function pauseOrResume() {
+    paused = !paused;
+    stage.classList.toggle('demo-paused', paused);
+    stage.dataset.demoState = paused ? 'paused' : 'running';
+    playDemo.textContent = paused ? '▶ 继续演示' : 'Ⅱ 暂停演示';
+    if (paused) {
+      resumeAudio = [commAudio, Engine.audio].filter(audio => audio && !audio.paused);
+      resumeAudio.forEach(audio => audio.pause());
+    } else {
+      resumeAudio.forEach(audio => audio.play().catch(() => {}));
+      resumeAudio = [];
+    }
+  }
+  async function runWalkthrough() {
+    document.dispatchEvent(new CustomEvent('music-demo-start', {detail:'community'}));
+    ++demoToken;
+    demoActive = false; Engine.stop(); commStop(); closeMenu();
+    restoreOriginal(); resetPresentation();
+    originalSaved = new Set(saved); originalLiked = new Set(liked);
+    const demoId = 'assets/audio/mo.m4a';
+    const data = registry.get(demoId);
+    const card = commPage.querySelector('.qm-card[data-audio="' + demoId + '"]');
+    // Start each playback from a fresh visual state without changing stored collections.
+    saved.delete(demoId); liked.delete(demoId); likeUpdaters.get(demoId)();
+    const token = demoToken;
+    demoActive = true; paused = false; resumeAudio = [];
+    stage.classList.add('demo-running'); stage.classList.remove('demo-paused');
+    cursor.hidden = false; cursor.classList.remove('clicking','holding');
+    cursorX = 32; cursorY = 110; paintCursor();
+    playDemo.textContent = 'Ⅱ 暂停演示'; replayDemo.disabled = false; stopDemo.hidden = false;
+    phone.scrollIntoView({behavior:'smooth', block:'center'});
+    try {
+      // 1. Enter the community and browse popular stickers.
+      chat.hidden = true; panel.hidden = true; messages.replaceChildren();
+      commPage.classList.remove('on'); commHome.classList.add('on');
+      commHome.querySelector('.qm-body').scrollTop = 0;
+      setCommunityStep(0); describe('01 / 发现热门表情包 · 进入 QQ音乐社区');
+      await wait(1000, token);
+      await clickTarget(document.getElementById('commEntry'), '进入社区', token);
+      const body = commPage.querySelector('.qm-body'); body.scrollTop = 0;
+      await moveTo(commPage.querySelector('.qm-hot'), '浏览热门表情包', token);
+      await wait(1500, token);
+      // 2. Listen, like and choose a sticker.
+      setCommunityStep(1); describe('02 / 试听、点赞与使用 · 选择这句音乐回复');
+      await scrollBody(body, body.scrollTop + card.getBoundingClientRect().top - body.getBoundingClientRect().top - 16, token);
+      await moveTo(card.querySelector('.imgwrap'), '选择音乐回复', token);
+      await wait(800, token);
+      await clickTarget(card.querySelector('.dur'), '试听原声', token);
+      await wait(3000, token); commStop();
+      await clickTarget(card.querySelector('.loveb'), '点赞', token);
+      await wait(900, token);
+      // 3. Send only the selected image and its own audio to Xiao Hang.
+      setCommunityStep(2); describe('03 / 分享给微信好友 · 发送表情包与原声');
+      await clickTarget(card.querySelector('.use'), '使用并发送', token);
+      await wait(1200, token);
+      await clickTarget(messages.querySelector('.xs-play'), '播放收到的音轨', token);
+      await wait(2000, token); Engine.stop();
+      // 4. Long press, add, open the smile drawer, select the music category, send again.
+      setCommunityStep(3); describe('04 / 收藏表情，再次使用 · 长按添加到表情库');
+      const image = messages.querySelector('.wx-sticker-image');
+      await moveTo(image, '长按表情包', token);
+      cursor.classList.add('holding');
+      await wait(900, token);
+      openMenu(image, data); cursor.classList.remove('holding');
+      await wait(1000, token);
+      await clickTarget(add, '添加表情', token);
+      await wait(1000, token);
+      await clickTarget(toggle, '打开表情栏目', token);
+      await wait(600, token);
+      await clickTarget(chat.querySelector('[data-wx-category="music"]'), '音乐表情包', token);
+      await wait(900, token);
+      const savedButton = [...content.querySelectorAll('.wx-saved-sticker')].find(button => button.querySelector('img').alt === data.lyric);
+      await scrollBody(content, content.scrollTop + savedButton.getBoundingClientRect().top - content.getBoundingClientRect().top - 36, token);
+      await clickTarget(savedButton, '再次发送', token);
+      await wait(1600, token);
+      demoActive = false; paused = false; resetPresentation();
+      originalSaved = originalLiked = null;
+      replayDemo.disabled = false; playDemo.textContent = '▶ 再播放一次';
+      stage.dataset.demoState = 'complete';
+      describe('演示完成 · 已从社区发送、收藏，并再次使用');
+    } catch (error) {
+      if (token !== demoToken) return;
+      stopWalkthrough('演示已停止，可以重新播放');
+    }
+  }
+  document.addEventListener('music-demo-start', e => {
+    if (e.detail !== 'community' && demoActive) stopWalkthrough('已切换到音乐回复演示');
+  });
+  playDemo.addEventListener('click', () => {
+    if (demoActive) pauseOrResume(); else { stage.dataset.demoState = 'running'; runWalkthrough(); }
+  });
+  replayDemo.addEventListener('click', () => { stage.dataset.demoState = 'running'; runWalkthrough(); });
+  stopDemo.addEventListener('click', () => { stage.dataset.demoState = 'stopped'; stopWalkthrough(); });
+  // A real user action immediately gives control back; scripted clicks remain uninterrupted.
+  stage.addEventListener('pointerdown', e => {
+    if (demoActive && e.isTrusted && !e.target.closest('.community-demo-controls')) {
+      stage.dataset.demoState = 'stopped'; stopWalkthrough('已切换为手动体验');
+    }
+  }, true);
+  document.addEventListener('keydown', e => {
+    if (demoActive && e.key === 'Escape') { stage.dataset.demoState = 'stopped'; stopWalkthrough(); }
+  });
+  window.addEventListener('pagehide', () => {
+    if (demoActive) { ++demoToken; Engine.stop(); commStop(); }
+  });
+
+})();
+
+
+/* Music reply walkthrough: lyrics + original audio; optional image; full-song return. */
+(() => {
+  const stage = document.getElementById('replyAutoStage');
+  const phone = document.getElementById('replyDemoPhone');
+  const root = phone.querySelector('.phone-screen');
+  const cursor = document.getElementById('replyDemoPointer');
+  const label = document.getElementById('replyPointerLabel');
+  const status = document.getElementById('replyDemoStatus');
+  const mode = document.getElementById('replyDemoMode');
+  const play = document.getElementById('replyDemoPlay');
+  const replay = document.getElementById('replyDemoReplay');
+  const stop = document.getElementById('replyDemoStop');
+  const stepButtons = [...document.querySelectorAll('#demo .step-tab')];
+  let token = 0, running = false, paused = false, cursorX = 32, cursorY = 180;
+  let resumeAudio = [];
+  function setStep(n) {
+    stage.dataset.demoStep = String(n);
+    stepButtons.forEach((button, i) => {
+      button.classList.toggle('on', i === n);
+      if (i === n) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+    });
+  }
+  function describe(path, step, text) {
+    setStep(step);
+    status.textContent = `${path === 'text' ? '文字回复' : '音乐表情包'} · ${step+1}/4 · ${text}`;
+  }
+  function resetPresentation() {
+    cursor.hidden = true; cursor.classList.remove('holding','clicking'); label.textContent = '';
+    stage.classList.remove('demo-running','demo-paused');
+    stage.querySelectorAll('.demo-target').forEach(el => el.classList.remove('demo-target'));
+    mode.disabled = false; stop.hidden = true; play.textContent = '▶ 播放 Demo';
+  }
+  function cancel(text = '演示已结束，可以继续手动体验') {
+    ++token; running = false; paused = false; resumeAudio = [];
+    Engine.stop(); if (fullAudio) fullAudio.pause(); closeSheet();
+    resetPresentation(); stage.dataset.demoState = 'stopped'; status.textContent = text;
+  }
+  function animate(duration, update, runToken) {
+    return new Promise((resolve,reject) => {
+      let elapsed = 0, previous = performance.now();
+      function frame(now) {
+        if (runToken !== token) { reject(new DOMException('Demo cancelled','AbortError')); return; }
+        const delta = Math.min(now - previous,60); previous = now;
+        if (!paused && !document.hidden) {
+          elapsed += delta; update && update(Math.min(elapsed/duration,1));
+        }
+        if (elapsed >= duration) resolve(); else requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+  const wait = (ms,t) => animate(ms,null,t);
+  async function moveTo(el,text,t) {
+    if (!el) throw new Error('Reply demo target missing');
+    label.textContent = text;
+    const x0 = cursorX, y0 = cursorY;
+    await animate(600,p => {
+      const bounds = root.getBoundingClientRect(), target = el.getBoundingClientRect();
+      const x = Math.max(8,Math.min(target.left+target.width/2-bounds.left,bounds.width-26));
+      const y = Math.max(50,Math.min(target.top+target.height/2-bounds.top,bounds.height-28));
+      const ease = p*p*(3-2*p);
+      cursorX = x0+(x-x0)*ease; cursorY = y0+(y-y0)*ease;
+      cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+    },t);
+    stage.querySelectorAll('.demo-target').forEach(node => node.classList.remove('demo-target'));
+    el.classList.add('demo-target'); await wait(200,t);
+  }
+  async function click(el,text,t,after) {
+    await moveTo(el,text,t); cursor.classList.add('clicking'); el.click(); after && after();
+    await wait(450,t); cursor.classList.remove('clicking'); el.classList.remove('demo-target');
+  }
+  async function reveal(body,el,t) {
+    const from = body.scrollTop;
+    const rect = el.getBoundingClientRect(), bounds = body.getBoundingClientRect();
+    if (rect.top >= bounds.top+8 && rect.bottom <= bounds.bottom-8) return;
+    const to = Math.max(0,Math.min(from+rect.top-bounds.top-24,body.scrollHeight-body.clientHeight));
+    await animate(650,p => { body.scrollTop = from+(to-from)*(p*p*(3-2*p)); },t);
+  }
+  function preparePath() {
+    Engine.stop(); commStop(); if(fullAudio) fullAudio.pause(); closeSheet();
+    if(lastCardEl){lastCardEl.remove();lastCardEl=null;}
+    friendReply.style.display = 'none';
+    stickerOn = false; lyricOn = true; cfDuration = 8; stickerBg = 'assets/img/stk-dog.png';
+    document.getElementById('stickerSwitch').classList.remove('on');
+    document.getElementById('lyricSwitch').classList.add('on');
+    document.getElementById('stickerPanel').classList.remove('on');
+    document.querySelectorAll('.sticker-bg').forEach(el=>el.classList.toggle('on',el.dataset.bg===stickerBg));
+    applyStickerPreview();
+    document.querySelector('#scr1 .confirm-body').scrollTop = 0;
+    activeLyric = 0;
+    document.querySelectorAll('.lyric-line[data-i]').forEach(el=>el.classList.toggle('act',el.dataset.i==='0'));
+    positionLyrics(); chosenLyric = MVP_LYRICS[0];
+    document.getElementById('cfLyric').textContent = chosenLyric;
+    go(0); setStep(0);
+  }
+  async function demonstratePath(path,t) {
+    preparePath(); stage.dataset.demoPath = path;
+    stage.removeAttribute('data-caption-demo');
+    cursorX=32; cursorY=180; cursor.style.transform=`translate(${cursorX}px, ${cursorY}px)`;
+    // Step 1: encounter a real lyric while listening; long press to share this line.
+    describe(path,0,'听歌时，长按想分享的那一句');
+    await wait(700,t);
+    await click(mainPlay,'听完整歌曲',t);
+    await wait(1400,t);
+    const lyric = lyricList.querySelector('.lyric-line[data-i="0"]');
+    await moveTo(lyric,'长按这一句歌词',t); cursor.classList.add('holding');
+    await wait(900,t); openSheet(lyric); cursor.classList.remove('holding');
+    await wait(750,t);
+    await click(document.getElementById('popShare'),'分享这一句',t,()=>setStep(1));
+    // Step 2: the original audio is present in both formats. Only the image is optional.
+    const body = document.querySelector('#scr1 .confirm-body');
+    describe(path,1,path==='text'?'文字回复：一句歌词 + 对应原声':'音乐表情包：配图 + 歌词 + 对应原声');
+    await wait(650,t);
+    const stickerSwitch = document.getElementById('stickerSwitch');
+    await reveal(body,stickerSwitch,t);
+    if(path==='sticker') {
+      await click(stickerSwitch,'开启音乐表情包',t);
+      const imageChoice = document.querySelector('.sticker-bg[data-bg="assets/img/stk-cow.png"]');
+      await reveal(body,imageChoice,t);
+      await click(imageChoice,'选择表情包配图',t);
+      await wait(600,t);
+      const lyricSwitch = document.getElementById('lyricSwitch');
+      await reveal(body,lyricSwitch,t);
+      describe(path,1,'关闭显示歌词，查看不叠加字幕的效果');
+      await click(lyricSwitch,'删除叠加字幕',t);
+      stage.dataset.captionDemo = 'hidden';
+      await wait(1400,t);
+      describe(path,1,'打开显示歌词，为表情包增加字幕');
+      await click(lyricSwitch,'增加歌词字幕',t);
+      stage.dataset.captionDemo = 'visible';
+      await wait(1400,t);
+    } else {
+      await moveTo(stickerSwitch,'保持文字回复，不添加配图',t);
+      await wait(850,t);
+    }
+    const preview = document.getElementById('cfPreviewPlay');
+    await reveal(body,preview,t);
+    await click(preview,'试听这一句原声',t);
+    await wait(1700,t); Engine.stop();
+    await click(document.getElementById('cfShare'),'分享给微信好友',t,()=>setStep(2));
+    // Step 3: listen to the received line in chat, with or without an image.
+    describe(path,2,path==='text'?'在聊天中接收文字歌词，点击播放原声':'在聊天中接收音乐表情包，点击播放原声');
+    await wait(950,t);
+    const card = chatBody.querySelector(path==='text'?'.ly-share':'.xsticker');
+    const listen = card.querySelector(path==='text'?'.ly-play':'.xs-play');
+    await reveal(chatBody,listen,t);
+    await click(listen,'听这一句原声',t);
+    await wait(1800,t); Engine.stop();
+    // Step 4: the QQ Music source opens the complete song, rather than the collection drawer.
+    describe(path,3,'点击 QQ音乐，回到完整歌曲');
+    const source = card.querySelector(path==='text'?'.qm-open.xf-name':'.xs-full.xf-name');
+    await reveal(chatBody,source,t);
+    await click(source,'回到 QQ音乐听完整歌曲',t,()=>setStep(3));
+    await wait(1600,t); if(fullAudio) fullAudio.pause();
+  }
+  function pauseOrResume() {
+    paused=!paused; stage.classList.toggle('demo-paused',paused);
+    stage.dataset.demoState = paused?'paused':'running';
+    play.textContent = paused?'▶ 继续演示':'Ⅱ 暂停演示';
+    if(paused){
+      resumeAudio=[fullAudio,Engine.audio].filter(audio=>audio&&!audio.paused);
+      resumeAudio.forEach(audio=>audio.pause());
+    } else {resumeAudio.forEach(audio=>audio.play().catch(()=>{}));resumeAudio=[];}
+  }
+  async function run() {
+    document.dispatchEvent(new CustomEvent('music-demo-start',{detail:'reply'}));
+    ++token; const t=token;
+    running=true; paused=false; resumeAudio=[]; resetPresentation();
+    stage.classList.add('demo-running'); cursor.hidden=false;
+    mode.disabled=true; replay.disabled=false; stop.hidden=false; play.textContent='Ⅱ 暂停演示';
+    stage.dataset.demoState='running'; stage.dataset.completedPaths='';
+    phone.scrollIntoView({behavior:'smooth',block:'center'});
+    const paths=mode.value==='both'?['text','sticker']:[mode.value];
+    try{
+      for(let i=0;i<paths.length;i++){
+        await demonstratePath(paths[i],t);
+        stage.dataset.completedPaths=paths.slice(0,i+1).join(',');
+        if(i<paths.length-1){status.textContent='文字回复已演示完成，接下来展示音乐表情包';await wait(1300,t);}
+      }
+      running=false; paused=false; resetPresentation(); setStep(3);
+      stage.dataset.demoState='complete'; play.textContent='▶ 再播放一次';
+      status.textContent=paths.length===2?'演示完成 · 文字回复与音乐表情包，均已回流完整歌曲':`演示完成 · ${paths[0]==='text'?'文字回复':'音乐表情包'}，已回流完整歌曲`;
+    }catch(error){if(t===token)cancel('演示已停止，可以重新播放');}
+  }
+  stepButtons.forEach((button,i)=>button.addEventListener('click',()=>setStep(i)));
+  play.addEventListener('click',()=>{if(running)pauseOrResume();else run();});
+  replay.addEventListener('click',run);
+  stop.addEventListener('click',()=>cancel());
+  stage.addEventListener('pointerdown',e=>{
+    if(running&&e.isTrusted&&!e.target.closest('.reply-demo-controls,.reply-demo-summary'))cancel('已切换为手动体验');
+  },true);
+  stage.addEventListener('click',e=>{
+    if(!running&&(e.target.closest('.xs-full,.qm-open')||e.target.closest('#tabLoop')))setStep(3);
+  });
+  document.addEventListener('music-demo-start',e=>{if(e.detail!=='reply'&&running)cancel('已切换到社区演示');});
+  document.addEventListener('keydown',e=>{if(running&&e.key==='Escape')cancel();});
+  window.addEventListener('pagehide',()=>{if(running){++token;Engine.stop();if(fullAudio)fullAudio.pause();}});
+})();
+
+</script>
+</body>
+</html>

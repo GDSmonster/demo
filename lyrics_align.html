@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歌词时间轴对齐工具</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f6f8f8;color:#15181c;margin:0;padding:24px;line-height:1.5}
+  .wrap{max-width:920px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 6px}
+  .sub{color:#7a828c;font-size:13px;margin-bottom:22px}
+  .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .col{flex:1;min-width:260px}
+  label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:#3a4149}
+  input[type=file]{width:100%;padding:10px;border:1.5px dashed #cfd6d2;border-radius:10px;background:#fafbfb}
+  textarea{width:100%;height:200px;padding:12px;border:1.5px solid #edf0f2;border-radius:10px;font-size:13px;font-family:inherit;resize:vertical}
+  .btn{background:#31c27c;color:#fff;border:none;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+  .btn:disabled{background:#cfd6d2;cursor:not-allowed}
+  .btn:hover:not(:disabled){background:#0fae66}
+  .status{font-size:13px;color:#3a4149;margin-top:14px;min-height:20px}
+  .bar{height:6px;background:#edf0f2;border-radius:3px;overflow:hidden;margin-top:8px}
+  .bar i{display:block;height:100%;width:0;background:#31c27c;transition:width .3s}
+  pre{background:#0f1410;color:#d8ede0;padding:16px;border-radius:10px;max-height:420px;overflow:auto;font-size:12.5px;line-height:1.6}
+  .lrc-line{padding:3px 0;border-bottom:1px solid #1a2420}
+  .lrc-line .t{color:#31c27c;font-weight:700;margin-right:8px}
+  .tip{font-size:12px;color:#7a828c;background:#fff8e6;border:1px solid #ffe9a8;padding:10px 14px;border-radius:10px;margin-bottom:16px}
+  .link{color:#0a8a51;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎵 歌词时间轴对齐工具</h1>
+  <div class="sub">上传解密后的 mp3 + 粘贴歌词，在浏览器里用 Whisper 自动识别并对齐，输出每行歌词的起止时间。</div>
+
+  <div class="tip">
+    <b>提示：</b>QQ音乐下载的 <code>.mgg</code> 是加密格式，请先用 <a class="link" href="https://git.unlock-music.dev/um/um-react" target="_blank">unlock-music</a> 解密成 <code>.mp3</code> 再上传。首次运行会下载 AI 模型（约 150MB，之后浏览器缓存），请稍候。
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>① 音频文件（mp3 / wav / m4a）</label>
+        <input type="file" id="audio" accept="audio/*">
+      </div>
+      <div class="col">
+        <label>② 歌词文本（每行一句）</label>
+        <textarea id="lyrics" placeholder="轻轻敲醒沉睡的心灵&#10;慢慢张开你的眼睛&#10;..."></textarea>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn" id="run" disabled>先上传音频并粘贴歌词</button>
+    </div>
+    <div class="status" id="status">准备就绪</div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <label>对齐结果（带时间戳）</label>
+    <pre id="result"></pre>
+    <div style="margin-top:12px">
+      <button class="btn" id="download">下载 JSON</button>
+    </div>
+  </div>
+</div>
+
+<!-- transformers.js：浏览器内运行 Whisper -->
+<script type="module">
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
+
+// 允许从 CDN 加载模型
+env.allowRemoteModels = true;
+env.allowLocalModels = false;
+
+const $ = id => document.getElementById(id);
+let transcriber = null;
+
+function checkReady(){
+  const hasAudio = $('audio').files.length > 0;
+  const hasLyrics = $('lyrics').value.trim().length > 0;
+  $('run').disabled = !(hasAudio && hasLyrics);
+  $('run').textContent = (hasAudio && hasLyrics) ? '🚀 开始识别并对齐' : '先上传音频并粘贴歌词';
+}
+$('audio').addEventListener('change', checkReady);
+$('lyrics').addEventListener('input', checkReady);
+
+function setStatus(msg, pct){
+  $('status').textContent = msg;
+  if(pct !== undefined) $('bar').style.width = pct + '%';
+}
+
+// 清洗文本：去掉标点空白，用于序列匹配
+function clean(s){
+  return (s || '').replace(/[\s，。、！？；：,.!?;:…—\-"'""''（）()\[\]【】《》]/g, '');
+}
+
+// 把识别出的词序列与歌词逐行对齐
+function align(words, lyricsLines){
+  // 拆字：每个字 -> 所属 word index
+  const charSeq = [], charToWord = [];
+  words.forEach((w, wi) => {
+    for(const ch of clean(w.text)){ charSeq.push(ch); charToWord.push(wi); }
+  });
+  // 歌词拆字：每个字 -> 所属行 index
+  const lineChars = [], charToLine = [];
+  lyricsLines.forEach((line, li) => {
+    for(const ch of clean(line)){ lineChars.push(ch); charToLine.push(li); }
+  });
+
+  // 序列匹配
+  const sm = new Diff(charSeq, lineChars);
+  const ops = sm.get_opcodes();
+  const lineWords = lyricsLines.map(() => []);
+  for(const [tag, i1, i2, j1, j2] of ops){
+    if(tag === 'equal'){
+      for(let k = 0; k < j2 - j1; k++){
+        const chOff = j1 + k, woOff = i1 + k;
+        if(woOff < charToWord.length && chOff < charToLine.length){
+          lineWords[charToLine[chOff]].push(charToWord[woOff]);
+        }
+      }
+    }
+  }
+
+  const result = [];
+  lyricsLines.forEach((line, li) => {
+    let idxs = [...new Set(lineWords[li])].sort((a,b)=>a-b);
+    let start, end;
+    if(idxs.length){
+      start = words[idxs[0]].start;
+      end = words[idxs[idxs.length-1]].end;
+    } else {
+      start = result.length ? result[result.length-1].end : 0;
+      end = start + 2;
+    }
+    result.push({ text: line, start: +start.toFixed(2), end: +end.toFixed(2) });
+  });
+  return result;
+}
+
+// 简易 difflib.SequenceMatcher 的 JS 实现（LCS-based）
+class Diff {
+  constructor(a, b){ this.a = a; this.b = b; }
+  get_opcodes(){
+    const a = this.a, b = this.b;
+    const n = a.length, m = b.length;
+    // 计算 LCS DP
+    const dp = Array.from({length:n+1}, () => new Int32Array(m+1));
+    for(let i = n-1; i >= 0; i--){
+      for(let j = m-1; j >= 0; j--){
+        if(a[i] === b[j]) dp[i][j] = dp[i+1][j+1] + 1;
+        else dp[i][j] = Math.max(dp[i+1][j], dp[i][j+1]);
+      }
+    }
+    const ops = [];
+    let i = 0, j = 0;
+    while(i < n && j < m){
+      if(a[i] === b[j]){
+        const i0 = i, j0 = j;
+        while(i < n && j < m && a[i] === b[j]){ i++; j++; }
+        ops.push(['equal', i0, i, j0, j]);
+      } else if(dp[i+1][j] >= dp[i][j+1]){
+        const i0 = i;
+        while(i < n && a[i] !== b[j] && dp[i+1][j] >= dp[i][j+1] && !(j < m && a[i] === b[j])) i++;
+        ops.push(['delete', i0, i, j, j]);
+      } else {
+        const j0 = j;
+        while(j < m && a[i] !== b[j] && dp[i][j+1] > dp[i+1][j] && !(i < n && a[i] === b[j])) j++;
+        ops.push(['insert', i, i, j0, j]);
+      }
+    }
+    if(i < n) ops.push(['delete', i, n, j, j]);
+    if(j < m) ops.push(['insert', i, i, j, m]);
+    return ops;
+  }
+}
+
+$('run').addEventListener('click', async () => {
+  const file = $('audio').files[0];
+  const lyrics = $('lyrics').value.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!file || !lyrics.length) return;
+
+  $('run').disabled = true;
+  setStatus('正在加载 Whisper 模型（首次约 150MB）...', 5);
+
+  try {
+    if(!transcriber){
+      transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-base', {
+        progress_callback: r => {
+          if(r.status === 'download'){
+            const pct = r.progress ? Math.round(r.progress * 90) : 5;
+            setStatus(`下载模型中... ${r.file}`, pct);
+          }
+        }
+      });
+    }
+
+    setStatus('正在读取音频并识别（中文，带词级时间戳）...', 95);
+
+    // Web Audio 解码为 Float32Array (16kHz mono)
+    const arrayBuf = await file.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuf = await audioCtx.decodeAudioData(arrayBuf.slice(0));
+    const offline = new OfflineAudioContext(1, audioBuf.duration * 16000, 16000);
+    const src = offline.createBufferSource();
+    src.buffer = audioBuf;
+    src.connect(offline.destination);
+    src.start();
+    const resampled = await offline.startRendering();
+    const audioData = resampled.getChannelData(0);
+
+    const out = await transcriber(audioData, {
+      language: 'zh',
+      task: 'transcribe',
+      return_timestamps: 'word',
+      chunk_length_s: 30,
+      initial_prompt: '明天会更好。轻轻敲醒沉睡的心灵。',
+    });
+
+    const words = (out.chunks || []).map(c => ({
+      text: c.text.replace(/^\s+|\s+$/g, ''),
+      start: c.timestamp[0],
+      end: c.timestamp[1] ?? c.timestamp[0] + 0.5
+    })).filter(w => w.text);
+
+    setStatus(`识别完成（${words.length} 个词），正在与歌词对齐...`, 100);
+
+    const timed = align(words, lyrics);
+
+    // 渲染
+    $('result').innerHTML = timed.map(l =>
+      `<div class="lrc-line"><span class="t">[${fmt(l.start)} - ${fmt(l.end)}]</span>${l.text}</div>`
+    ).join('');
+    $('resultCard').style.display = 'block';
+    window._timedResult = timed;
+    setStatus(`✅ 完成！共 ${timed.length} 行，可下载 JSON。`, 100);
+
+  } catch(e){
+    console.error(e);
+    setStatus('❌ 出错：' + e.message, 0);
+  } finally {
+    $('run').disabled = false;
+  }
+});
+
+function fmt(t){
+  const m = Math.floor(t/60), s = t - m*60;
+  return `${String(m).padStart(2,'0')}:${s.toFixed(2).padStart(5,'0')}`;
+}
+
+$('download').addEventListener('click', () => {
+  if(!window._timedResult) return;
+  const blob = new Blob([JSON.stringify(window._timedResult, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'lyrics_timed.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>

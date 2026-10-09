@@ -1205,6 +1205,27 @@ footer .logo{font-size:17px}
   footer{font-size:12px}
 }
 
+/* Full-screen cover: one opening screen, then the existing product story. */
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:112px 0 112px;background:radial-gradient(ellipse at 50% 45%,#e8f8ee 0%,#f5fbf7 45%,#fff 85%)}
+.hero-grid{width:100%;text-align:center;position:relative;z-index:1}
+.hero-eyebrow{margin-bottom:24px;letter-spacing:2px}
+.hero h1{font-size:clamp(36px,6.3vw,76px);line-height:1.3}
+.hero p.lead{max-width:720px;margin:26px auto 32px;line-height:1.9;color:#536c5c}
+.hero-cta{justify-content:center;gap:16px}
+.cover-scroll{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;color:#617769;font-size:13px;letter-spacing:1.5px;padding:8px 16px;border-radius:8px}
+.cover-scroll:hover{color:#119553;background:#e9f8ee}
+.cover-scroll svg{width:20px;height:20px;animation:cover-nudge 2s ease-in-out infinite}
+@keyframes cover-nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media(max-width:600px){
+  .hero{padding:100px 0 110px}
+  .hero h1{font-size:clamp(24px,7.5vw,38px)}
+  .hero-eyebrow{font-size:12px;letter-spacing:1.5px;margin-bottom:20px}
+  .hero p.lead{font-size:16px;max-width:440px;margin:22px auto 28px}
+  .hero-cta{gap:12px}
+  .cover-scroll{bottom:24px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.cover-scroll svg{animation:none}}
+
 </style>
 </head>
 <body>
@@ -1237,6 +1258,10 @@ footer .logo{font-size:17px}
     </div>
 
   </div>
+  <a class="cover-scroll" href="#pain" aria-label="向下探索，查看需求起源">
+    <span>向下探索</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
 </header>
 
 <!-- ================= Background ================= -->

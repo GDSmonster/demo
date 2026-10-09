@@ -1991,7 +1991,7 @@ document.getElementById('tabLoop').addEventListener('click', ()=>reopenFullSong(
    Audio engine — real audio with simulated fallback
 ==================================================== */
 const Engine = {
-  audio:null, timer:null, active:null,
+  audio:null, timer:null, active:null, simPaused:false,
 
   stop(){
     if(this.audio){ this.audio.pause(); this.audio = null; }
@@ -2002,11 +2002,15 @@ const Engine = {
   // opts: {src, duration, loop, onProgress(p,timeText), onStop, onEnd}
   play(opts){
     this.stop();
-    this.active = opts;
+    this.active = opts; this.simPaused = false;
     const dur = opts.duration;
-    let real = false, t0 = Date.now();
+    let real = false, t0 = Date.now(), simPrevious = t0;
 
     const simTick = ()=>{
+      const now = Date.now();
+      if(this.simPaused){ t0 += now - simPrevious; }
+      simPrevious = now;
+      if(this.simPaused) return;
       const t = (Date.now()-t0)/1000;
       if(t >= dur){
         if(opts.loop){ t0 = Date.now(); opts.onProgress && opts.onProgress(0, fmt(0)); }
@@ -2029,18 +2033,26 @@ const Engine = {
     a.preload = 'auto';
     a.addEventListener('error', ()=>{ /* will fall through play() rejection */ });
     a.src = opts.src;
+    a.addEventListener('ended', ()=>{
+      if(this.audio !== a) return;
+      if(opts.loop){ a.currentTime = 0; a.play().catch(()=>this.stop()); }
+      else { opts.onProgress && opts.onProgress(1, fmt(a.duration)); opts.onEnd && opts.onEnd(); this.stop(); }
+    });
     a.play().then(()=>{
+      if(this.audio !== a) return;
       real = true;
       a.addEventListener('timeupdate', ()=>{
         const t = a.currentTime;
-        if(t >= dur){
+        if(!opts.playToEnd && t >= dur){
           if(opts.loop){ a.currentTime = 0; }
           else { opts.onProgress && opts.onProgress(1, fmt(dur)); opts.onEnd && opts.onEnd(); this.stop(); }
           return;
         }
-        opts.onProgress && opts.onProgress(t/dur, fmt(t));
+        const progressDuration = opts.playToEnd && Number.isFinite(a.duration) ? a.duration : dur;
+        opts.onProgress && opts.onProgress(t/progressDuration, fmt(t));
       });
     }).catch(()=>{
+      if(this.audio !== a) return;
       // missing file / autoplay policy / decode error → simulate
       this.audio = null;
       startSim();
@@ -2053,6 +2065,32 @@ const Engine = {
     return true;
   }
 };
+// Auto demos advance only when the currently played track has finished.
+// Polling keeps cancellation responsive and supports the existing pause/resume controls.
+function waitForDemoAudio(getAudio, isCancelled, isPaused, engine = null) {
+  const playback = engine && engine.active;
+  if(playback){ playback.loop = false; playback.playToEnd = true; }
+  return new Promise((resolve, reject) => {
+    let startup = 0, previous = performance.now(), started = false;
+    function frame(now){
+      if(isCancelled()){ reject(new DOMException('Demo cancelled','AbortError')); return; }
+      const delta = Math.min(now-previous,100); previous = now;
+      if(isPaused()){ requestAnimationFrame(frame); return; }
+      const audio = getAudio();
+      if(audio && audio.error){ reject(new Error('音轨加载失败，请重新播放演示')); return; }
+      if(engine && playback && engine.active !== playback){ resolve(); return; }
+      if(audio && audio.ended){ resolve(); return; }
+      if(audio && !audio.paused) started = true;
+      if(engine && engine.timer) started = true;
+      if(!started){
+        startup += delta;
+        if(startup > 15000){ reject(new Error('音轨未能开始播放，请重新播放演示')); return; }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  });
+}
 function fmt(t){ t=Math.max(0,Math.floor(t)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); }
 let uid = 0;
 
@@ -2830,7 +2868,7 @@ commPage.addEventListener('click', e=>{
     await animate(1000, p => { body.scrollTop = from + (to - from) * (p * p * (3 - 2 * p)); }, token);
   }
   function pauseOrResume() {
-    paused = !paused;
+    paused = !paused; Engine.simPaused = paused;
     stage.classList.toggle('demo-paused', paused);
     stage.dataset.demoState = paused ? 'paused' : 'running';
     playDemo.textContent = paused ? '▶ 继续演示' : 'Ⅱ 暂停演示';
@@ -2877,7 +2915,7 @@ commPage.addEventListener('click', e=>{
       await moveTo(card.querySelector('.imgwrap'), '选择音乐回复', token);
       await wait(800, token);
       await clickTarget(card.querySelector('.dur'), '试听原声', token);
-      await wait(3000, token); commStop();
+      await waitForDemoAudio(()=>commAudio,()=>token!==demoToken,()=>paused); commStop();
       await clickTarget(card.querySelector('.loveb'), '点赞', token);
       await wait(900, token);
       // 3. Send only the selected image and its own audio to Xiao Hang.
@@ -2885,7 +2923,7 @@ commPage.addEventListener('click', e=>{
       await clickTarget(card.querySelector('.use'), '使用并发送', token);
       await wait(1200, token);
       await clickTarget(messages.querySelector('.xs-play'), '播放收到的音轨', token);
-      await wait(2000, token); Engine.stop();
+      await waitForDemoAudio(()=>Engine.audio,()=>token!==demoToken,()=>paused,Engine);
       // 4. Long press, add, open the smile drawer, select the music category, send again.
       setCommunityStep(3); describe('04 / 收藏表情，再次使用 · 长按添加到表情库');
       const image = messages.querySelector('.wx-sticker-image');
@@ -2911,7 +2949,7 @@ commPage.addEventListener('click', e=>{
       describe('演示完成 · 已从社区发送、收藏，并再次使用');
     } catch (error) {
       if (token !== demoToken) return;
-      stopWalkthrough('演示已停止，可以重新播放');
+      stopWalkthrough(error.message==='音轨加载失败，请重新播放演示'||error.message==='音轨未能开始播放，请重新播放演示'?error.message:'演示已停止，可以重新播放');
     }
   }
   document.addEventListener('music-demo-start', e => {
@@ -3018,6 +3056,7 @@ commPage.addEventListener('click', e=>{
   }
   function preparePath() {
     Engine.stop(); commStop(); if(fullAudio) fullAudio.pause(); closeSheet();
+    if(fullAudio){ try{ fullAudio.currentTime = 0; }catch(e){} }
     if(lastCardEl){lastCardEl.remove();lastCardEl=null;}
     friendReply.style.display = 'none';
     stickerOn = false; lyricOn = true; cfDuration = 8; stickerBg = 'assets/img/stk-dog.png';
@@ -3041,7 +3080,7 @@ commPage.addEventListener('click', e=>{
     describe(path,0,'听歌时，长按想分享的那一句');
     await wait(700,t);
     await click(mainPlay,'听完整歌曲',t);
-    await wait(1400,t);
+    await waitForDemoAudio(()=>fullAudio,()=>t!==token,()=>paused);
     const lyric = lyricList.querySelector('.lyric-line[data-i="0"]');
     await moveTo(lyric,'长按这一句歌词',t); cursor.classList.add('holding');
     await wait(900,t); openSheet(lyric); cursor.classList.remove('holding');
@@ -3076,7 +3115,7 @@ commPage.addEventListener('click', e=>{
     const preview = document.getElementById('cfPreviewPlay');
     await reveal(body,preview,t);
     await click(preview,'试听这一句原声',t);
-    await wait(1700,t); Engine.stop();
+    await waitForDemoAudio(()=>Engine.audio,()=>t!==token,()=>paused,Engine);
     await click(document.getElementById('cfShare'),'分享给微信好友',t,()=>setStep(2));
     // Step 3: listen to the received line in chat, with or without an image.
     describe(path,2,path==='text'?'在聊天中接收文字歌词，点击播放原声':'在聊天中接收音乐表情包，点击播放原声');
@@ -3085,16 +3124,16 @@ commPage.addEventListener('click', e=>{
     const listen = card.querySelector(path==='text'?'.ly-play':'.xs-play');
     await reveal(chatBody,listen,t);
     await click(listen,'听这一句原声',t);
-    await wait(1800,t); Engine.stop();
+    await waitForDemoAudio(()=>Engine.audio,()=>t!==token,()=>paused,Engine);
     // Step 4: the QQ Music source opens the complete song, rather than the collection drawer.
     describe(path,3,'点击 QQ音乐，回到完整歌曲');
     const source = card.querySelector(path==='text'?'.qm-open.xf-name':'.xs-full.xf-name');
     await reveal(chatBody,source,t);
     await click(source,'回到 QQ音乐听完整歌曲',t,()=>setStep(3));
-    await wait(1600,t); if(fullAudio) fullAudio.pause();
+    await waitForDemoAudio(()=>fullAudio,()=>t!==token,()=>paused);
   }
   function pauseOrResume() {
-    paused=!paused; stage.classList.toggle('demo-paused',paused);
+    paused=!paused; Engine.simPaused = paused; stage.classList.toggle('demo-paused',paused);
     stage.dataset.demoState = paused?'paused':'running';
     play.textContent = paused?'▶ 继续演示':'Ⅱ 暂停演示';
     if(paused){
@@ -3120,7 +3159,7 @@ commPage.addEventListener('click', e=>{
       running=false; paused=false; resetPresentation(); setStep(3);
       stage.dataset.demoState='complete'; play.textContent='▶ 再播放一次';
       status.textContent=paths.length===2?'演示完成 · 文字回复与音乐表情包，均已回流完整歌曲':`演示完成 · ${paths[0]==='text'?'文字回复':'音乐表情包'}，已回流完整歌曲`;
-    }catch(error){if(t===token)cancel('演示已停止，可以重新播放');}
+    }catch(error){if(t===token)cancel(error.message==='音轨加载失败，请重新播放演示'||error.message==='音轨未能开始播放，请重新播放演示'?error.message:'演示已停止，可以重新播放');}
   }
   stepButtons.forEach((button,i)=>button.addEventListener('click',()=>setStep(i)));
   play.addEventListener('click',()=>{if(running)pauseOrResume();else run();});
